@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -14,6 +15,13 @@ class AdminPanelTest extends TestCase
     {
         parent::setUp();
         $this->seed();
+
+        // Authenticate as Admin user
+        $admin = DB::table('users')->where('role', 'admin')->first();
+        if ($admin) {
+            $userModel = User::find($admin->id);
+            $this->actingAs($userModel);
+        }
     }
 
     public function test_admin_dashboard_loads_successfully(): void

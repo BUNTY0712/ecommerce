@@ -34,7 +34,7 @@
             </a>
 
             <!-- Header Quick Search Bar (Desktop) -->
-            <div class="d-none d-lg-block flex-grow-1 mx-4" style="max-width: 480px;">
+            <div class="d-none d-lg-block flex-grow-1 mx-4" style="max-width: 440px;">
                 <form action="{{ route('products.index') }}" method="GET">
                     <div class="input-group">
                         <span class="input-group-text bg-light border-0 ps-3 text-muted">
@@ -57,7 +57,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Navigation Items & Cart Action -->
+            <!-- Navigation Items, Auth & Cart -->
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-semibold">
                     <li class="nav-item">
@@ -77,8 +77,48 @@
                     </li>
                 </ul>
 
-                <!-- Header Actions: Cart Button -->
+                <!-- Right Header Controls: User Authentication & Cart -->
                 <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+
+                    <!-- Customer User Account Section -->
+                    @auth
+                        <div class="dropdown">
+                            <button class="btn btn-light border dropdown-toggle d-flex align-items-center gap-2 fw-semibold px-3 py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-circle-user text-primary fs-5"></i>
+                                <span>{{ Auth::user()->name }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                <li class="px-3 py-2 border-bottom">
+                                    <span class="d-block fw-bold text-dark small">{{ Auth::user()->name }}</span>
+                                    <span class="d-block text-muted small">{{ Auth::user()->email }}</span>
+                                </li>
+                                @if(Auth::user()->role === 'admin')
+                                    <li>
+                                        <a class="dropdown-menu-item dropdown-item text-warning fw-semibold py-2" href="{{ route('admin.dashboard') }}">
+                                            <i class="fa-solid fa-gauge-high me-2"></i> Admin Panel
+                                        </a>
+                                    </li>
+                                @endif
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger py-2 fw-semibold">
+                                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-light border fw-semibold px-3 py-2">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+                        </a>
+                        <a href="{{ route('register') }}" class="btn btn-outline-primary fw-semibold px-3 py-2 d-none d-sm-inline-block">
+                            Register
+                        </a>
+                    @endauth
+
+                    <!-- Cart Button -->
                     <a href="{{ route('cart.index') }}" class="btn btn-outline-primary position-relative d-flex align-items-center gap-2 px-3 py-2 shadow-sm">
                         <i class="fa-solid fa-cart-shopping fs-5"></i>
                         <div class="text-start d-none d-sm-block leading-tight">
@@ -89,6 +129,7 @@
                             {{ $cartCount }}
                         </span>
                     </a>
+
                 </div>
             </div>
         </div>

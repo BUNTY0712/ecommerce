@@ -4,17 +4,27 @@ use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 // Customer Front-End Routes
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// Customer Authentication
+Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [UserAuthController::class, 'login']);
+Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [UserAuthController::class, 'register']);
+Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
 // Shopping Cart
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -35,8 +45,13 @@ Route::post('/checkout/payment', [PaymentController::class, 'process'])->name('c
 // Order Success Receipt
 Route::get('/order/success/{order}', [OrderController::class, 'success'])->name('order.success');
 
-// Admin Panel Routes
-Route::prefix('admin')->name('admin.')->group(function () {
+// Admin Authentication (Public)
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+// Admin Panel Routes (Protected by AdminMiddleware)
+Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Admin Orders Management

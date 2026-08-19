@@ -159,6 +159,14 @@
             <a href="{{ route('home') }}" target="_blank" class="admin-nav-item">
                 <i class="fa-solid fa-store text-info"></i> View Live Store <i class="fa-solid fa-up-right-from-square fs-8 ms-auto text-muted"></i>
             </a>
+
+            <!-- Admin Logout -->
+            <form action="{{ route('admin.logout') }}" method="POST" class="mt-4 px-3">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger btn-sm w-100 fw-bold py-2">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Admin Sign Out
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -177,9 +185,9 @@
                 <div class="vr mx-1"></div>
                 <div class="d-flex align-items-center gap-2">
                     <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 36px; height: 36px;">
-                        AD
+                        {{ Auth::check() ? strtoupper(substr(Auth::user()->name, 0, 2)) : 'AD' }}
                     </div>
-                    <span class="fw-semibold text-dark small">Administrator</span>
+                    <span class="fw-semibold text-dark small">{{ Auth::check() ? Auth::user()->name : 'Administrator' }}</span>
                 </div>
             </div>
         </header>
