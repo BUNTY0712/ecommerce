@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AdminProductController extends Controller
@@ -48,7 +49,7 @@ class AdminProductController extends Controller
     }
 
     /**
-     * Store newly created product in database using DB facade.
+     * Store newly created product in database.
      */
     public function store(Request $request)
     {
@@ -62,6 +63,7 @@ class AdminProductController extends Controller
             'description' => 'nullable|string',
             'status' => 'required|in:0,1',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:2048',
         ]);
 
         $imagePath = null;
@@ -74,7 +76,7 @@ class AdminProductController extends Controller
 
         $slug = Str::slug($request->input('name')) . '-' . rand(100, 999);
 
-        DB::table('products')->insert([
+        $productId = DB::table('products')->insertGetId([
             'category_id' => $request->input('category_id'),
             'name' => $request->input('name'),
             'slug' => $slug,
@@ -89,7 +91,33 @@ class AdminProductController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
+        // Process multiple gallery images upload
+        if ($request->hasFile('images')) {
+            $sortOrder = 1;
+            foreach ($request->file('images') as $file) {
+                if ($file->isValid()) {
+                    $filename = time() . '_' . Str::slug($request->input('name')) . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->storeAs('products', $filename, 'public');
+                    $galleryPath = 'products/' . $filename;
+
+                    DB::table('product_images')->insert([
+                        'product_id' => $productId,
+                        'image_path' => $galleryPath,
+                        'sort_order' => $sortOrder++,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    // Set primary image if not uploaded separately
+                    if (empty($imagePath)) {
+                        $imagePath = $galleryPath;
+                        DB::table('products')->where('id', $productId)->update(['image' => $imagePath]);
+                    }
+                }
+            }
+        }
+
+        return redirect()->route('admin.products.index')->with('success', 'Product created successfully with image gallery!');
     }
 
     /**
@@ -103,7 +131,12 @@ class AdminProductController extends Controller
         }
 
         $categories = DB::table('categories')->orderBy('name', 'asc')->get();
-        return view('admin.products.edit', compact('product', 'categories'));
+        $galleryImages = DB::table('product_images')
+            ->where('product_id', $id)
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        return view('admin.products.edit', compact('product', 'categories', 'galleryImages'));
     }
 
     /**
@@ -126,6 +159,7 @@ class AdminProductController extends Controller
             'description' => 'nullable|string',
             'status' => 'required|in:0,1',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:2048',
         ]);
 
         $updateData = [
@@ -149,7 +183,48 @@ class AdminProductController extends Controller
 
         DB::table('products')->where('id', $id)->update($updateData);
 
+        // Process additional gallery images upload
+        if ($request->hasFile('images')) {
+            $lastOrder = DB::table('product_images')->where('product_id', $id)->max('sort_order') ?? 0;
+            foreach ($request->file('images') as $file) {
+                if ($file->isValid()) {
+                    $filename = time() . '_' . Str::slug($request->input('name')) . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->storeAs('products', $filename, 'public');
+                    $galleryPath = 'products/' . $filename;
+
+                    DB::table('product_images')->insert([
+                        'product_id' => $id,
+                        'image_path' => $galleryPath,
+                        'sort_order' => ++$lastOrder,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    if (empty($product->image) && empty($updateData['image'])) {
+                        DB::table('products')->where('id', $id)->update(['image' => $galleryPath]);
+                    }
+                }
+            }
+        }
+
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
+    }
+
+    /**
+     * Delete gallery image.
+     */
+    public function destroyImage($productId, $imageId)
+    {
+        $image = DB::table('product_images')->where('id', $imageId)->where('product_id', $productId)->first();
+        if ($image) {
+            if (Storage::disk('public')->exists($image->image_path)) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+            DB::table('product_images')->where('id', $imageId)->delete();
+            return redirect()->back()->with('success', 'Gallery image deleted successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Image not found.');
     }
 
     /**
@@ -159,8 +234,15 @@ class AdminProductController extends Controller
     {
         $product = DB::table('products')->where('id', $id)->first();
         if ($product) {
+            // Delete product gallery images from disk
+            $galleryImages = DB::table('product_images')->where('product_id', $id)->get();
+            foreach ($galleryImages as $img) {
+                if (Storage::disk('public')->exists($img->image_path)) {
+                    Storage::disk('public')->delete($img->image_path);
+                }
+            }
             DB::table('products')->where('id', $id)->delete();
-            return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
+            return redirect()->route('admin.products.index')->with('success', 'Product and images deleted successfully!');
         }
 
         return redirect()->route('admin.products.index')->with('error', 'Product not found.');

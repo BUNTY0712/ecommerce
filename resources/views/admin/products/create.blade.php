@@ -109,18 +109,40 @@
                             </select>
                         </div>
 
-                        <!-- Product Image Upload -->
-                        <div class="col-12">
-                            <label for="image" class="form-label fw-semibold text-dark">Product Image</label>
+                        <!-- Product Images Upload (Primary + Multiple Gallery Images) -->
+                        <div class="col-md-6">
+                            <label for="image" class="form-label fw-bold text-dark">Main Cover Image <span class="text-muted">(Primary)</span></label>
                             <input type="file" 
                                    name="image" 
                                    id="image" 
                                    class="form-control @error('image') is-invalid @enderror" 
                                    accept="image/*">
-                            <small class="text-muted">Supported formats: JPG, PNG, SVG, WEBP. Max size: 2MB</small>
+                            <div class="form-text small">Primary featured image for product cards.</div>
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="images" class="form-label fw-bold text-dark">Additional Gallery Images <span class="badge bg-primary-subtle text-primary border rounded-pill">Upload Multiple</span></label>
+                            <input type="file" 
+                                   name="images[]" 
+                                   id="images" 
+                                   class="form-control @error('images.*') is-invalid @enderror" 
+                                   accept="image/*" 
+                                   multiple 
+                                   onchange="previewGalleryImages(this)">
+                            <div class="form-text small">Select multiple photos (Hold Ctrl / Cmd).</div>
+                            @error('images.*')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Gallery Thumbnails Real-time Preview Container -->
+                        <div class="col-12" id="galleryPreviewWrapper" style="display: none;">
+                            <label class="form-label fw-semibold text-dark small">Selected Gallery Photos Preview:</label>
+                            <div class="d-flex flex-wrap gap-2 p-3 bg-light rounded-3 border" id="galleryPreviewContainer">
+                            </div>
                         </div>
 
                         <!-- Short Description -->
@@ -165,3 +187,34 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function previewGalleryImages(input) {
+    const wrapper = document.getElementById('galleryPreviewWrapper');
+    const container = document.getElementById('galleryPreviewContainer');
+    container.innerHTML = '';
+
+    if (input.files && input.files.length > 0) {
+        wrapper.style.display = 'block';
+        Array.from(input.files).forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const item = document.createElement('div');
+                item.className = 'position-relative border bg-white rounded-3 p-1 shadow-sm';
+                item.style.width = '80px';
+                item.style.height = '80px';
+                item.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}" style="width: 100%; height: 100%; object-fit: contain;" class="rounded-2">
+                    <span class="position-absolute top-0 start-0 badge bg-dark text-white rounded-circle ms-1 mt-1" style="font-size: 0.65rem;">#${index + 1}</span>
+                `;
+                container.appendChild(item);
+            };
+            reader.readAsDataURL(file);
+        });
+    } else {
+        wrapper.style.display = 'none';
+    }
+}
+</script>
+@endpush

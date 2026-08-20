@@ -42,15 +42,31 @@
 
                         $savings = $hasDiscount ? ($product->price - $product->discount_price) : 0;
 
-                        $imagePath = $product->image
-                            ? (str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image))
-                            : asset('storage/products/placeholder.svg');
+                        // Build complete gallery images list
+                        $allImages = [];
+                        if ($product->image) {
+                            $allImages[] = str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image);
+                        }
+                        if (isset($galleryImages) && count($galleryImages) > 0) {
+                            foreach ($galleryImages as $gImg) {
+                                $url = str_starts_with($gImg->image_path, 'http') ? $gImg->image_path : asset('storage/' . $gImg->image_path);
+                                if (!in_array($url, $allImages)) {
+                                    $allImages[] = $url;
+                                }
+                            }
+                        }
+                        if (empty($allImages)) {
+                            $allImages[] = asset('storage/products/placeholder.svg');
+                        }
+
+                        $mainImage = $allImages[0];
 
                         $rating = number_format(4.2 + (($product->id * 3) % 8) / 10, 1);
                         $reviewsCount = 28 + ($product->id * 11);
                     @endphp
 
-                    <div class="position-relative bg-light rounded-4 p-4 d-flex align-items-center justify-content-center text-center shadow-inner" style="min-height: 420px;">
+                    <!-- Main Featured Display Box -->
+                    <div class="position-relative bg-light rounded-4 p-4 d-flex align-items-center justify-content-center text-center shadow-inner mb-3" style="min-height: 420px;">
                         @if($hasDiscount)
                             <div class="position-absolute top-0 start-0 m-3 z-2">
                                 <span class="badge badge-discount fs-6 shadow-sm">
@@ -59,12 +75,27 @@
                             </div>
                         @endif
 
-                        <img src="{{ $imagePath }}" 
+                        <img id="mainFeaturedImg" 
+                             src="{{ $mainImage }}" 
                              alt="{{ $product->name }}" 
                              class="img-fluid" 
-                             style="max-height: 380px; object-fit: contain; width: 100%; transition: transform 0.3s ease;"
+                             style="max-height: 380px; object-fit: contain; width: 100%; transition: opacity 0.2s ease;"
                              onerror="this.src='https://placehold.co/600x450/e2e8f0/475569?text=Product+Image'">
                     </div>
+
+                    <!-- Multiple Image Thumbnails Bar -->
+                    @if(count($allImages) > 1)
+                        <div class="d-flex align-items-center gap-2 overflow-x-auto pb-2" id="galleryThumbnailsRow">
+                            @foreach($allImages as $idx => $imgUrl)
+                                <button type="button" 
+                                        class="btn p-1 border rounded-3 bg-white gallery-thumb-btn {{ $idx === 0 ? 'border-primary shadow-sm' : 'border-subtle' }}" 
+                                        onclick="changeFeaturedImage('{{ $imgUrl }}', this)" 
+                                        style="width: 76px; height: 76px; flex-shrink: 0;">
+                                    <img src="{{ $imgUrl }}" alt="Thumbnail {{ $idx + 1 }}" style="width: 100%; height: 100%; object-fit: contain;" class="rounded-2">
+                                </button>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Right Column: Details & Order Form -->
@@ -217,7 +248,7 @@
     </div>
 
     <!-- Related Products Showcase -->
-    @if(isset($relatedProducts) && $relatedProducts->count() > 0)
+    @if(isset($relatedProducts) && count($relatedProducts) > 0)
         <div class="mb-5">
             <h4 class="fw-bold text-dark mb-4">
                 <i class="fa-solid fa-layer-group me-2 text-primary"></i> Related Products in Category
@@ -251,6 +282,25 @@
         let current = parseInt(qtyInput.value) || 1;
         if (current > 1) {
             qtyInput.value = current - 1;
+        }
+    }
+
+    function changeFeaturedImage(imgUrl, btn) {
+        const mainImg = document.getElementById('mainFeaturedImg');
+        if (mainImg) {
+            mainImg.style.opacity = '0.2';
+            setTimeout(() => {
+                mainImg.src = imgUrl;
+                mainImg.style.opacity = '1';
+            }, 120);
+        }
+        document.querySelectorAll('.gallery-thumb-btn').forEach(b => {
+            b.classList.remove('border-primary', 'shadow-sm');
+            b.classList.add('border-subtle');
+        });
+        if (btn) {
+            btn.classList.remove('border-subtle');
+            btn.classList.add('border-primary', 'shadow-sm');
         }
     }
 </script>

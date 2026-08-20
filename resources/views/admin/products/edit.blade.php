@@ -107,16 +107,42 @@
                             </select>
                         </div>
 
-                        <!-- Product Image -->
-                        <div class="col-12">
-                            <label for="image" class="form-label fw-semibold text-dark">Replace Product Image</label>
+                        <!-- Existing Gallery Images Grid -->
+                        @if(isset($galleryImages) && count($galleryImages) > 0)
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-dark">Current Product Gallery Photos ({{ count($galleryImages) }})</label>
+                                <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded-3 border">
+                                    @foreach($galleryImages as $gImg)
+                                        <div class="position-relative border bg-white rounded-3 p-2 shadow-sm text-center" style="width: 100px;">
+                                            <img src="{{ str_starts_with($gImg->image_path, 'http') ? $gImg->image_path : asset('storage/' . $gImg->image_path) }}" 
+                                                 alt="Gallery" 
+                                                 class="rounded" 
+                                                 style="width: 100%; height: 75px; object-fit: contain;">
+                                            
+                                            <!-- Delete Button -->
+                                            <form action="{{ route('admin.products.images.destroy', ['product' => $product->id, 'image' => $gImg->id]) }}" method="POST" class="mt-2" onsubmit="return confirm('Delete this gallery photo?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2 small rounded-pill mt-1" title="Delete Photo">
+                                                    <i class="fa-solid fa-trash-can fs-8"></i> Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Product Cover Image -->
+                        <div class="col-md-6">
+                            <label for="image" class="form-label fw-bold text-dark">Replace Main Cover Image</label>
                             @if($product->image)
-                                <div class="mb-2 d-flex align-items-center gap-3">
+                                <div class="mb-2 d-flex align-items-center gap-2">
                                     <img src="{{ str_starts_with($product->image, 'http') ? $product->image : asset('storage/' . $product->image) }}" 
-                                         alt="Current" 
+                                         alt="Current Cover" 
                                          class="rounded border bg-light" 
-                                         style="width: 60px; height: 60px; object-fit: contain;">
-                                    <span class="small text-muted">Current Image: {{ $product->image }}</span>
+                                         style="width: 48px; height: 48px; object-fit: contain;">
+                                    <span class="small text-muted">Current Primary Image</span>
                                 </div>
                             @endif
                             <input type="file" 
@@ -125,6 +151,21 @@
                                    class="form-control @error('image') is-invalid @enderror" 
                                    accept="image/*">
                             @error('image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Add Additional Gallery Images -->
+                        <div class="col-md-6">
+                            <label for="images" class="form-label fw-bold text-dark">Add More Gallery Images <span class="badge bg-primary-subtle text-primary border rounded-pill">Upload Multiple</span></label>
+                            <input type="file" 
+                                   name="images[]" 
+                                   id="images" 
+                                   class="form-control @error('images.*') is-invalid @enderror" 
+                                   accept="image/*" 
+                                   multiple>
+                            <div class="form-text small">Upload additional images to add to gallery.</div>
+                            @error('images.*')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

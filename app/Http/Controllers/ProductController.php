@@ -71,6 +71,12 @@ class ProductController extends Controller
             abort(404, 'Product not found');
         }
 
+        // Fetch gallery images for multi-image display
+        $galleryImages = DB::table('product_images')
+            ->where('product_id', $id)
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
         // Fetch related products strictly using Query Builder
         $relatedProducts = DB::table('products')
             ->where('category_id', $product->category_id)
@@ -79,6 +85,6 @@ class ProductController extends Controller
             ->limit(4)
             ->get();
 
-        return view('products.show', compact('product', 'relatedProducts'));
+        return view('products.show', compact('product', 'galleryImages', 'relatedProducts'));
     }
 }
