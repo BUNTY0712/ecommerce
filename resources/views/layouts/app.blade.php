@@ -279,7 +279,9 @@
 <body>
 
     <!-- Header / Navigation Component -->
-    @include('components.header')
+    @unless(request()->routeIs('login') || request()->is('login'))
+        @include('components.header')
+    @endunless
 
     <!-- Flash Alerts -->
     <div class="container mt-3">

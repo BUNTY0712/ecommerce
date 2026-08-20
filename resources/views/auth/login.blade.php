@@ -6,6 +6,14 @@
 <div class="container">
     <div class="row justify-content-center py-5">
         <div class="col-md-6 col-lg-5">
+            <!-- Store Brand Header -->
+            <div class="text-center mb-4">
+                <a class="brand-logo d-inline-flex align-items-center gap-2 text-decoration-none" href="{{ route('home') }}">
+                    <i class="fa-solid fa-bag-shopping fs-2"></i>
+                    <span class="fs-3 fw-bold text-dark">Store<span class="text-primary">Craft</span></span>
+                </a>
+            </div>
+
             <!-- Test Credentials Helper Box -->
             <div class="alert alert-info border-0 shadow-sm rounded-4 mb-4">
                 <div class="d-flex align-items-center gap-2 mb-1 fw-bold">
@@ -85,6 +93,13 @@
                         <a href="{{ route('register') }}" class="text-primary fw-bold text-decoration-none ms-1">Register Now</a>
                     </div>
                 </div>
+            </div>
+
+            <!-- Back to Store Link -->
+            <div class="text-center mt-3">
+                <a href="{{ route('home') }}" class="text-muted small text-decoration-none">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Return to Store
+                </a>
             </div>
         </div>
     </div>
