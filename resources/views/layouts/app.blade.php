@@ -104,9 +104,14 @@
 
         /* Modern Navigation Header */
         .site-header {
-            background-color: rgba(255, 255, 255, 0.92);
+            background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 1050 !important;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
         }
 
         .brand-logo {
@@ -179,9 +184,23 @@
             color: #ffffff;
             font-weight: 600;
             border-radius: var(--radius-sm);
-            padding: 0.65rem 1.25rem;
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
             transition: all 0.2s ease;
+        }
+
+        .btn:not(.btn-sm):not(.btn-lg) {
+            padding: 0.65rem 1.25rem;
+        }
+
+        .btn-sm, .btn-group-sm > .btn {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.825rem;
+            border-radius: calc(var(--radius-sm) - 0.1rem);
+        }
+
+        .btn-lg, .btn-group-lg > .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
         }
 
         .btn-primary:hover, .btn-primary:focus {

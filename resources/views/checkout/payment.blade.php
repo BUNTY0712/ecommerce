@@ -3,37 +3,37 @@
 @section('title', 'Select Payment Method - StoreCraft')
 
 @section('content')
-<div class="container">
+<div class="container px-3 px-sm-4">
     
     <!-- Checkout Steps -->
-    <div class="checkout-steps">
+    <div class="checkout-steps mb-4 flex-wrap gap-2 gap-sm-4 justify-content-center">
         <div class="step-item">
             <div class="step-number"><i class="fa-solid fa-check fs-7"></i></div>
-            <span>Shipping</span>
+            <span class="text-nowrap">Shipping</span>
         </div>
-        <div class="step-divider"></div>
+        <div class="step-divider d-none d-sm-block"></div>
         <div class="step-item active">
             <div class="step-number"><i class="fa-solid fa-credit-card fs-7"></i></div>
-            <span>Payment</span>
+            <span class="text-nowrap">Payment</span>
         </div>
-        <div class="step-divider"></div>
+        <div class="step-divider d-none d-sm-block"></div>
         <div class="step-item">
             <div class="step-number">3</div>
-            <span>Success</span>
+            <span class="text-nowrap">Success</span>
         </div>
     </div>
 
-    <div class="row g-4 justify-content-center mb-5">
+    <div class="row g-3 g-md-4 justify-content-center mb-4 mb-md-5">
         <!-- Payment Options Card -->
         <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-3 mb-md-4">
                 <div class="card-header bg-white py-3 border-0">
-                    <h5 class="fw-bold mb-0 text-dark">
+                    <h5 class="fw-bold mb-0 text-dark fs-5">
                         <i class="fa-solid fa-shield-heart me-2 text-primary"></i> Payment Gateway & Options
                     </h5>
                     <p class="text-muted small mb-0 mt-1">Select your preferred payment method below to complete order.</p>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-3 p-sm-4">
                     <form action="{{ route('checkout.process') }}" method="POST" id="paymentForm">
                         @csrf
                         <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
@@ -41,19 +41,19 @@
                         <input type="hidden" name="razorpay_signature" id="razorpay_signature">
 
                         <!-- Payment Options Radio List -->
-                        <div class="d-flex flex-column gap-3 mb-4">
+                        <div class="d-flex flex-column gap-2.5 gap-sm-3 mb-4">
 
                             <!-- Option 1: Razorpay -->
                             <div class="border rounded-3 p-3 shadow-sm bg-white cursor-pointer" id="optionRazorpayBox" style="transition: all 0.2s ease;">
-                                <div class="form-check d-flex align-items-center gap-3">
-                                    <input class="form-check-input fs-5 mt-0" type="radio" name="payment_method" id="methodRazorpay" value="razorpay" checked>
-                                    <label class="form-check-label w-100 cursor-pointer" for="methodRazorpay">
-                                        <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-start gap-2.5 gap-sm-3">
+                                    <input class="form-check-input flex-shrink-0 mt-1" type="radio" name="payment_method" id="methodRazorpay" value="razorpay" checked style="margin-left: 0; width: 1.2em; height: 1.2em; cursor: pointer;">
+                                    <label class="form-check-label w-100 cursor-pointer mb-0" for="methodRazorpay">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-1.5">
                                             <div>
                                                 <span class="fw-bold text-dark d-block fs-6">Razorpay Online Payment</span>
-                                                <span class="text-muted small">Cards, UPI, NetBanking, Paytm, PhonePe, GPay (TEST Mode)</span>
+                                                <span class="text-muted small d-block mt-0.5" style="font-size: 0.78rem;">Cards, UPI, NetBanking, Paytm, PhonePe, GPay</span>
                                             </div>
-                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 fs-7">
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 flex-shrink-0" style="font-size: 0.72rem;">
                                                 <i class="fa-solid fa-bolt me-1"></i> Recommended
                                             </span>
                                         </div>
@@ -63,15 +63,15 @@
 
                             <!-- Option 2: Cash on Delivery -->
                             <div class="border rounded-3 p-3 shadow-sm bg-white cursor-pointer" id="optionCodBox" style="transition: all 0.2s ease;">
-                                <div class="form-check d-flex align-items-center gap-3">
-                                    <input class="form-check-input fs-5 mt-0" type="radio" name="payment_method" id="methodCod" value="cod">
-                                    <label class="form-check-label w-100 cursor-pointer" for="methodCod">
-                                        <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-start gap-2.5 gap-sm-3">
+                                    <input class="form-check-input flex-shrink-0 mt-1" type="radio" name="payment_method" id="methodCod" value="cod" style="margin-left: 0; width: 1.2em; height: 1.2em; cursor: pointer;">
+                                    <label class="form-check-label w-100 cursor-pointer mb-0" for="methodCod">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-1.5">
                                             <div>
                                                 <span class="fw-bold text-dark d-block fs-6">Cash on Delivery (COD)</span>
-                                                <span class="text-muted small">Pay cash directly to courier upon delivery</span>
+                                                <span class="text-muted small d-block mt-0.5" style="font-size: 0.78rem;">Pay cash directly to courier upon delivery</span>
                                             </div>
-                                            <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 fs-7">
+                                            <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 flex-shrink-0" style="font-size: 0.72rem;">
                                                 <i class="fa-solid fa-money-bill-wave me-1"></i> Cash
                                             </span>
                                         </div>
@@ -87,7 +87,7 @@
                                 <strong class="text-dark"><i class="fa-solid fa-location-dot text-primary me-1"></i> Shipping Address:</strong>
                                 <a href="{{ route('checkout.shipping') }}" class="text-primary fw-semibold text-decoration-none">Edit</a>
                             </div>
-                            <p class="mb-0 text-secondary">
+                            <p class="mb-0 text-secondary" style="font-size: 0.825rem;">
                                 <strong>{{ $shippingData['first_name'] }} {{ $shippingData['last_name'] }}</strong> ({{ $shippingData['phone'] }})<br>
                                 {{ $shippingData['address'] }} {{ $shippingData['address_line_2'] ? ', ' . $shippingData['address_line_2'] : '' }}<br>
                                 {{ $shippingData['city'] }}, {{ $shippingData['state'] }} - {{ $shippingData['pincode'] }}, {{ $shippingData['country'] }}
@@ -95,7 +95,7 @@
                         </div>
 
                         <!-- Pay Button -->
-                        <button type="button" id="payButton" class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-sm">
+                        <button type="button" id="payButton" class="btn btn-primary btn-md btn-md-lg w-100 py-2.5 py-sm-3 px-2 fw-bold shadow-sm d-flex align-items-center justify-content-center" style="font-size: 0.85rem;">
                             <i class="fa-solid fa-lock me-2"></i> Pay & Complete Order (₹{{ number_format($cartData['total'], 2) }})
                         </button>
                     </form>
@@ -105,31 +105,31 @@
 
         <!-- Order Summary Sidebar -->
         <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4">
+            <div class="card border-0 shadow-sm rounded-4 sticky-lg-top" style="top: 100px;">
                 <div class="card-header bg-white py-3 border-0">
-                    <h5 class="fw-bold mb-0 text-dark">Order Items Invoice</h5>
+                    <h6 class="fw-bold mb-0 text-dark">Order Items Invoice</h6>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-3 p-sm-4">
                     <ul class="list-group list-group-flush mb-3">
                         @foreach($cartData['items'] as $item)
                             <li class="list-group-item px-0 d-flex justify-content-between align-items-center border-0 py-2">
-                                <div>
-                                    <span class="fw-semibold text-dark">{{ $item['name'] }}</span>
+                                <div class="overflow-hidden me-2">
+                                    <span class="fw-semibold text-dark d-block text-truncate" style="max-width: 170px;">{{ $item['name'] }}</span>
                                     <span class="text-muted small d-block">Qty: {{ $item['quantity'] }} &times; ₹{{ number_format($item['price'], 2) }}</span>
                                 </div>
-                                <span class="fw-bold text-dark">₹{{ number_format($item['total'], 2) }}</span>
+                                <span class="fw-bold text-dark text-nowrap">₹{{ number_format($item['total'], 2) }}</span>
                             </li>
                         @endforeach
                     </ul>
 
-                    <hr class="my-3">
+                    <hr class="my-2.5">
 
-                    <div class="d-flex justify-content-between mb-2 text-secondary">
+                    <div class="d-flex justify-content-between mb-2 text-secondary small">
                         <span>Items Subtotal</span>
                         <span class="fw-semibold text-dark">₹{{ number_format($cartData['subtotal'], 2) }}</span>
                     </div>
 
-                    <div class="d-flex justify-content-between mb-3 text-secondary">
+                    <div class="d-flex justify-content-between mb-3 text-secondary small">
                         <span>Shipping Charge</span>
                         @if($cartData['shipping'] == 0)
                             <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold">FREE</span>
@@ -138,9 +138,9 @@
                         @endif
                     </div>
 
-                    <hr class="my-3">
+                    <hr class="my-2.5">
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-baseline">
                         <span class="fs-5 fw-bold text-dark">Total Amount</span>
                         <span class="fs-4 fw-bold text-primary">₹{{ number_format($cartData['total'], 2) }}</span>
                     </div>

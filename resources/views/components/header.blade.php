@@ -30,8 +30,30 @@
 <header class="site-header sticky-top">
     <nav class="navbar navbar-expand-lg py-3">
         <div class="container">
-            <!-- Brand Logo -->
-            <a class="brand-logo d-flex align-items-center gap-2 me-lg-4 text-decoration-none" href="{{ route('home') }}">
+            <!-- Mobile Header Top Bar (Logo + Cart + Hamburger) -->
+            <div class="d-flex align-items-center justify-content-between w-100 d-lg-none">
+                <a class="brand-logo d-flex align-items-center gap-2 text-decoration-none" href="{{ route('home') }}">
+                    @if($siteLogo && \Illuminate\Support\Facades\Storage::disk('public')->exists($siteLogo))
+                        <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ $siteName }}" style="max-height: 34px; object-fit: contain;">
+                    @else
+                        <i class="fa-solid fa-bag-shopping fs-4 text-primary"></i>
+                        <span class="fs-5 fw-bold text-dark">{{ $siteName }}</span>
+                    @endif
+                </a>
+
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{{ route('cart.index') }}" class="btn btn-outline-primary btn-sm position-relative d-flex align-items-center gap-1.5 px-2.5 py-1 shadow-xs">
+                        <i class="fa-solid fa-cart-shopping fs-6"></i>
+                        <span class="badge bg-danger rounded-pill px-1.5 py-0.5 fs-7">{{ $cartCount }}</span>
+                    </a>
+                    <button class="navbar-toggler border-0 p-1.5 shadow-none ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon" style="width: 1.25em; height: 1.25em;"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Desktop Logo (Visible only on Desktop lg+) -->
+            <a class="brand-logo d-none d-lg-flex align-items-center gap-2 me-lg-4 text-decoration-none" href="{{ route('home') }}">
                 @if($siteLogo && \Illuminate\Support\Facades\Storage::disk('public')->exists($siteLogo))
                     <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ $siteName }}" style="max-height: 42px; object-fit: contain;">
                 @else
@@ -43,7 +65,7 @@
             <!-- Header Quick Search Bar (Desktop) -->
             <div class="d-none d-lg-block flex-grow-1 mx-4" style="max-width: 440px;">
                 <form action="{{ route('products.index') }}" method="GET">
-                    <div class="input-group">
+                    <div class="input-group shadow-xs">
                         <span class="input-group-text bg-light border-0 ps-3 text-muted">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
@@ -59,10 +81,24 @@
                 </form>
             </div>
 
-            <!-- Mobile Navbar Toggle -->
-            <button class="navbar-toggler border-0 p-2 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <!-- Mobile Quick Search Bar (Below Top Bar on Mobile < lg) -->
+            <div class="w-100 d-lg-none mt-2">
+                <form action="{{ route('products.index') }}" method="GET">
+                    <div class="input-group input-group-sm shadow-xs">
+                        <span class="input-group-text bg-light border border-end-0 ps-2.5 text-muted">
+                            <i class="fa-solid fa-magnifying-glass fs-7"></i>
+                        </span>
+                        <input type="text" 
+                               name="search" 
+                               class="form-control bg-light border border-start-0 border-end-0 py-1.5 shadow-none fs-7" 
+                               placeholder="Search products..." 
+                               value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-primary px-3 py-1.5 fs-7 fw-bold text-nowrap">
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
 
             <!-- Navigation Items, Auth & Cart -->
             <div class="collapse navbar-collapse" id="navbarContent">

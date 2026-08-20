@@ -22,80 +22,72 @@
 <div class="card h-100 product-card-hover overflow-hidden border-0 shadow-sm position-relative">
     <!-- Top Discount Badge -->
     @if($hasDiscount)
-        <div class="position-absolute top-0 start-0 m-3 z-2">
-            <span class="badge badge-discount">
-                <i class="fa-solid fa-bolt me-1"></i> SAVE {{ $discountPercent }}%
+        <div class="position-absolute top-0 start-0 m-2 m-sm-2.5 z-2">
+            <span class="badge badge-discount px-2 py-0.5" style="font-size: 0.7rem;">
+                <i class="fa-solid fa-bolt me-1"></i> {{ $discountPercent }}% OFF
             </span>
         </div>
     @endif
 
-    <!-- Product Image -->
-    <div class="product-img-wrapper d-flex align-items-center justify-content-center p-4" style="height: 220px;">
-        <a href="{{ route('products.show', $product->id) }}" class="d-block w-100 text-center">
+    <!-- Product Image Box -->
+    <div class="product-img-wrapper d-flex align-items-center justify-content-center p-2 p-sm-3">
+        <a href="{{ route('products.show', $product->id) }}" class="d-block w-100 h-100 text-center d-flex align-items-center justify-content-center">
             <img src="{{ $imagePath }}" 
                  alt="{{ $product->name }}" 
-                 class="img-fluid" 
-                 style="max-height: 180px; object-fit: contain; width: 100%;"
+                 class="img-fluid product-card-img" 
                  onerror="this.src='https://placehold.co/400x300/e2e8f0/475569?text=Product+Image'">
         </a>
     </div>
 
     <!-- Card Content -->
-    <div class="card-body d-flex flex-column p-3">
-        @if(isset($product->category_name))
-            <div class="mb-1">
-                <span class="badge badge-category">
+    <div class="card-body d-flex flex-column p-2.5 p-sm-3">
+        <!-- Category & Stock Badges Row -->
+        <div class="d-flex align-items-center justify-content-between gap-1 mb-1 mb-sm-1.5">
+            @if(isset($product->category_name))
+                <span class="badge badge-category text-truncate" style="font-size: 0.7rem; padding: 0.25em 0.6em;">
                     {{ $product->category_name }}
                 </span>
-            </div>
-        @endif
+            @endif
+            @if($product->stock > 0)
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5 ms-auto" style="font-size: 0.68rem;">In Stock</span>
+            @else
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-1.5 py-0.5 ms-auto" style="font-size: 0.68rem;">Out of Stock</span>
+            @endif
+        </div>
 
-        <h6 class="fw-bold text-dark mb-1 text-truncate" title="{{ $product->name }}">
+        <!-- Product Name -->
+        <h6 class="fw-bold text-dark mb-1 text-truncate product-card-title" title="{{ $product->name }}">
             <a href="{{ route('products.show', $product->id) }}" class="text-dark text-decoration-none hover-primary">
                 {{ $product->name }}
             </a>
         </h6>
 
-        <!-- Star Ratings -->
-        <div class="d-flex align-items-center gap-1 mb-2">
-            <div class="rating-stars">
+        <!-- Star Ratings (Single Row) -->
+        <div class="d-flex align-items-center gap-1 mb-2 text-nowrap overflow-hidden">
+            <div class="rating-stars" style="font-size: 0.72rem;">
                 <i class="fa-solid fa-star"></i>
                 <i class="fa-solid fa-star"></i>
                 <i class="fa-solid fa-star"></i>
                 <i class="fa-solid fa-star"></i>
                 <i class="fa-solid fa-star-half-stroke"></i>
             </div>
-            <span class="small fw-semibold text-dark me-1 ms-1">{{ $rating }}</span>
-            <span class="small text-muted">({{ $reviewsCount }})</span>
+            <span class="fw-bold text-dark ms-0.5" style="font-size: 0.75rem;">{{ $rating }}</span>
+            <span class="text-muted" style="font-size: 0.72rem;">({{ $reviewsCount }})</span>
         </div>
 
-        <!-- Short description snippet -->
-        @if(!empty($product->short_description))
-            <p class="text-muted small mb-3 text-truncate-2" style="font-size: 0.825rem; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                {{ $product->short_description }}
-            </p>
-        @endif
-
-        <!-- Price & Stock Footer -->
+        <!-- Price Footer & Buttons -->
         <div class="mt-auto pt-2 border-top">
-            <div class="d-flex align-items-baseline justify-content-between mb-2">
-                <div>
-                    <span class="fs-5 fw-bold text-dark">₹{{ number_format($effectivePrice, 2) }}</span>
-                    @if($hasDiscount)
-                        <span class="text-muted text-decoration-line-through small ms-1">₹{{ number_format($product->price, 2) }}</span>
-                    @endif
-                </div>
-                @if($product->stock > 0)
-                    <span class="badge bg-success-subtle text-success border border-success-subtle fs-8 px-2 py-1">In Stock</span>
-                @else
-                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-8 px-2 py-1">Out of Stock</span>
+            <div class="d-flex align-items-baseline gap-1 mb-2 text-nowrap overflow-hidden">
+                <span class="fw-bold text-dark fs-6 fs-sm-5">₹{{ number_format($effectivePrice, $effectivePrice == floor($effectivePrice) ? 0 : 2) }}</span>
+                @if($hasDiscount)
+                    <span class="text-muted text-decoration-line-through small" style="font-size: 0.75rem;">₹{{ number_format($product->price, $product->price == floor($product->price) ? 0 : 2) }}</span>
                 @endif
             </div>
 
             <!-- Action Buttons -->
-            <div class="row g-2">
+            <div class="row g-1.5 g-sm-2">
                 <div class="col-6">
-                    <a href="{{ route('products.show', $product->id) }}" class="btn btn-outline-primary btn-sm w-100 fw-semibold py-2">
+                    <a href="{{ route('products.show', $product->id) }}" class="btn btn-outline-primary btn-sm w-100 fw-semibold text-nowrap d-flex align-items-center justify-content-center py-1.5 px-1 px-sm-2 product-card-btn">
                         Details
                     </a>
                 </div>
@@ -104,7 +96,7 @@
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                         <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold py-2" {{ $product->stock < 1 ? 'disabled' : '' }}>
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold text-nowrap d-flex align-items-center justify-content-center py-1.5 px-1 px-sm-2 product-card-btn" {{ $product->stock < 1 ? 'disabled' : '' }}>
                             <i class="fa-solid fa-cart-plus me-1"></i> Add
                         </button>
                     </form>
@@ -113,3 +105,34 @@
         </div>
     </div>
 </div>
+
+<style>
+    .product-img-wrapper {
+        height: 145px;
+    }
+    .product-card-img {
+        max-height: 120px;
+        object-fit: contain;
+        width: 100%;
+    }
+    .product-card-title {
+        font-size: 0.85rem;
+    }
+    .product-card-btn {
+        font-size: 0.78rem;
+    }
+    @media (min-width: 576px) {
+        .product-img-wrapper {
+            height: 190px;
+        }
+        .product-card-img {
+            max-height: 155px;
+        }
+        .product-card-title {
+            font-size: 0.925rem;
+        }
+        .product-card-btn {
+            font-size: 0.825rem;
+        }
+    }
+</style>

@@ -2,7 +2,7 @@
     $siteName = \App\Models\Setting::get('site_name', 'StoreCraft');
     $siteLogo = \App\Models\Setting::get('site_logo');
 @endphp
-<footer class="bg-dark text-white pt-5 pb-4 mt-auto">
+<footer class="bg-dark text-white pt-5 pb-4 mt-auto position-relative z-3">
     <div class="container">
         <div class="row g-4">
             <!-- Col 1: Brand Info -->

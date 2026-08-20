@@ -3,34 +3,35 @@
 @section('title', 'Shopping Cart - StoreCraft')
 
 @section('content')
-<div class="container">
+<div class="container px-3 px-sm-4">
     
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <h2 class="fw-extrabold text-dark mb-0">
+    <!-- Page Header Bar -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 mb-md-4 gap-2">
+        <h2 class="fw-extrabold text-dark mb-0 fs-3 fs-md-2">
             <i class="fa-solid fa-cart-shopping me-2 text-primary"></i> Shopping Cart
             @if(!empty($cartData['items']))
-                <span class="fs-6 fw-normal text-muted">({{ $cartData['item_count'] }} items)</span>
+                <span class="fs-6 fw-normal text-muted ms-1">({{ $cartData['item_count'] }} {{ $cartData['item_count'] == 1 ? 'item' : 'items' }})</span>
             @endif
         </h2>
-        <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm fw-semibold">
+        <a href="{{ route('products.index') }}" class="btn btn-outline-secondary btn-sm fw-semibold text-nowrap px-3 py-1.5">
             <i class="fa-solid fa-arrow-left me-1"></i> Continue Shopping
         </a>
     </div>
 
     @if(!empty($cartData['items']))
-        <div class="row g-4 mb-5">
-            <!-- Left: Cart Items Table -->
+        <div class="row g-3 g-md-4 mb-4 mb-md-5">
+            <!-- Left: Cart Items -->
             <div class="col-lg-8">
 
                 <!-- Free Shipping Progress Alert -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4" style="background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);">
-                    <div class="card-body p-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-3 mb-md-4" style="background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);">
+                    <div class="card-body p-3 p-sm-4">
                         @if($cartData['subtotal'] >= 1000)
-                            <div class="d-flex align-items-center gap-3 text-success">
-                                <i class="fa-solid fa-circle-check fs-3"></i>
+                            <div class="d-flex align-items-center gap-2 gap-sm-3 text-success">
+                                <i class="fa-solid fa-circle-check fs-4 fs-sm-3 flex-shrink-0"></i>
                                 <div>
                                     <strong class="fs-6">Congratulations! You unlocked FREE Express Shipping!</strong>
-                                    <p class="mb-0 small text-success-emphasis">Your order qualifies for 0 shipping fees.</p>
+                                    <p class="mb-0 small text-success-emphasis">Your order qualifies for ₹0 shipping fees.</p>
                                 </div>
                             </div>
                         @else
@@ -38,21 +39,21 @@
                                 $remainingForFreeShipping = 1000 - $cartData['subtotal'];
                                 $progressPercent = min(100, round(($cartData['subtotal'] / 1000) * 100));
                             @endphp
-                            <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-1">
                                 <span class="fw-bold text-primary small">
                                     <i class="fa-solid fa-truck-fast me-1"></i> Add <strong>₹{{ number_format($remainingForFreeShipping, 2) }}</strong> more for FREE Shipping!
                                 </span>
-                                <span class="small fw-bold text-dark">{{ $progressPercent }}%</span>
+                                <span class="small fw-bold text-dark ms-auto">{{ $progressPercent }}%</span>
                             </div>
-                            <div class="progress bg-white shadow-inner" style="height: 10px; border-radius: 5px;">
+                            <div class="progress bg-white shadow-inner" style="height: 8px; border-radius: 4px;">
                                 <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ $progressPercent }}%;"></div>
                             </div>
                         @endif
                     </div>
                 </div>
 
-                <!-- Items Table Card -->
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <!-- Desktop Cart Table View (md and up) -->
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden d-none d-md-block">
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
@@ -60,7 +61,7 @@
                                     <tr>
                                         <th scope="col" class="py-3 px-4">Item Details</th>
                                         <th scope="col" class="py-3 text-center">Unit Price</th>
-                                        <th scope="col" class="py-3 text-center" style="min-width: 140px;">Quantity</th>
+                                        <th scope="col" class="py-3 text-center" style="min-width: 130px;">Quantity</th>
                                         <th scope="col" class="py-3 text-end pe-4">Subtotal</th>
                                         <th scope="col" class="py-3 text-center">Action</th>
                                     </tr>
@@ -79,11 +80,11 @@
                                                         <img src="{{ $imagePath }}" 
                                                              alt="{{ $item['name'] }}" 
                                                              class="rounded border bg-light p-1" 
-                                                             style="width: 70px; height: 70px; object-fit: contain;"
+                                                             style="width: 64px; height: 64px; object-fit: contain;"
                                                              onerror="this.src='https://placehold.co/100x100/e2e8f0/475569?text=Product'">
                                                     </a>
                                                     <div>
-                                                        <a href="{{ route('products.show', $item['product_id']) }}" class="fw-bold text-dark text-decoration-none hover-primary d-block mb-1">
+                                                        <a href="{{ route('products.show', $item['product_id']) }}" class="fw-bold text-dark text-decoration-none hover-primary d-block mb-1 fs-6">
                                                             {{ $item['name'] }}
                                                         </a>
                                                         <span class="badge bg-success-subtle text-success fs-8">In Stock ({{ $item['max_stock'] }})</span>
@@ -102,18 +103,18 @@
                                                         @csrf
                                                         <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
                                                         <input type="hidden" name="quantity" value="{{ $item['quantity'] - 1 }}">
-                                                        <button type="submit" class="btn btn-sm btn-light border-0 px-2" {{ $item['quantity'] <= 1 ? 'disabled' : '' }}>
+                                                        <button type="submit" class="btn btn-sm btn-light border-0 px-2 py-1" {{ $item['quantity'] <= 1 ? 'disabled' : '' }}>
                                                             <i class="fa-solid fa-minus fs-8"></i>
                                                         </button>
                                                     </form>
 
-                                                    <span class="fw-bold px-3 text-dark">{{ $item['quantity'] }}</span>
+                                                    <span class="fw-bold px-2.5 text-dark" style="font-size: 0.9rem;">{{ $item['quantity'] }}</span>
 
                                                     <form action="{{ route('cart.update') }}" method="POST" class="d-inline">
                                                         @csrf
                                                         <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
                                                         <input type="hidden" name="quantity" value="{{ $item['quantity'] + 1 }}">
-                                                        <button type="submit" class="btn btn-sm btn-light border-0 px-2" {{ $item['quantity'] >= $item['max_stock'] ? 'disabled' : '' }}>
+                                                        <button type="submit" class="btn btn-sm btn-light border-0 px-2 py-1" {{ $item['quantity'] >= $item['max_stock'] ? 'disabled' : '' }}>
                                                             <i class="fa-solid fa-plus fs-8"></i>
                                                         </button>
                                                     </form>
@@ -129,7 +130,7 @@
                                                 <form action="{{ route('cart.remove', $item['product_id']) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Remove item">
+                                                    <button type="submit" class="btn btn-sm btn-link text-danger p-1 text-decoration-none" title="Remove item">
                                                         <i class="fa-solid fa-trash-can fs-6"></i>
                                                     </button>
                                                 </form>
@@ -141,16 +142,88 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Mobile Cart Cards View (sm and down) -->
+                <div class="d-block d-md-none">
+                    @foreach($cartData['items'] as $item)
+                        @php
+                            $imagePath = $item['image']
+                                ? (str_starts_with($item['image'], 'http') ? $item['image'] : asset('storage/' . $item['image']))
+                                : asset('storage/products/placeholder.svg');
+                        @endphp
+                        <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-start gap-3 mb-3">
+                                    <a href="{{ route('products.show', $item['product_id']) }}" class="flex-shrink-0">
+                                        <img src="{{ $imagePath }}" 
+                                             alt="{{ $item['name'] }}" 
+                                             class="rounded border bg-light p-1" 
+                                             style="width: 60px; height: 60px; object-fit: contain;"
+                                             onerror="this.src='https://placehold.co/100x100/e2e8f0/475569?text=Product'">
+                                    </a>
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <a href="{{ route('products.show', $item['product_id']) }}" class="fw-bold text-dark text-decoration-none hover-primary d-block mb-1 text-truncate" style="font-size: 0.9rem;">
+                                            {{ $item['name'] }}
+                                        </a>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fw-semibold text-muted" style="font-size: 0.8rem;">₹{{ number_format($item['price'], 2) }}</span>
+                                            <span class="badge bg-success-subtle text-success fs-8">In Stock</span>
+                                        </div>
+                                    </div>
+                                    <form action="{{ route('cart.remove', $item['product_id']) }}" method="POST" class="flex-shrink-0 ms-1">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-1 text-decoration-none" title="Remove item">
+                                            <i class="fa-solid fa-trash-can fs-6"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                                    <!-- Quantity Stepper -->
+                                    <div class="d-inline-flex align-items-center border rounded-3 bg-white p-0.5">
+                                        <form action="{{ route('cart.update') }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
+                                            <input type="hidden" name="quantity" value="{{ $item['quantity'] - 1 }}">
+                                            <button type="submit" class="btn btn-sm btn-light border-0 px-2 py-1" {{ $item['quantity'] <= 1 ? 'disabled' : '' }}>
+                                                <i class="fa-solid fa-minus fs-8"></i>
+                                            </button>
+                                        </form>
+
+                                        <span class="fw-bold px-2.5 text-dark" style="font-size: 0.85rem;">{{ $item['quantity'] }}</span>
+
+                                        <form action="{{ route('cart.update') }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $item['product_id'] }}">
+                                            <input type="hidden" name="quantity" value="{{ $item['quantity'] + 1 }}">
+                                            <button type="submit" class="btn btn-sm btn-light border-0 px-2 py-1" {{ $item['quantity'] >= $item['max_stock'] ? 'disabled' : '' }}>
+                                                <i class="fa-solid fa-plus fs-8"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Item Subtotal -->
+                                    <div>
+                                        <span class="small text-muted me-1">Subtotal:</span>
+                                        <span class="fw-bold text-primary fs-6">₹{{ number_format($item['total'], 2) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
             </div>
 
             <!-- Right: Order Summary Sidebar -->
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4">
+                <div class="card border-0 shadow-sm rounded-4 sticky-lg-top" style="top: 100px;">
                     <div class="card-header bg-white py-3 border-0">
                         <h5 class="fw-bold mb-0 text-dark">Order Summary</h5>
                     </div>
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between mb-3 text-secondary">
+                    <div class="card-body p-3 p-sm-4">
+                        <div class="d-flex justify-content-between mb-2.5 text-secondary">
                             <span>Bag Subtotal</span>
                             <span class="fw-bold text-dark">₹{{ number_format($cartData['subtotal'], 2) }}</span>
                         </div>
@@ -166,25 +239,25 @@
 
                         <!-- Promo Code Input Visual -->
                         <div class="my-3">
-                            <label class="form-label small fw-semibold text-muted">Promo Code / Coupon</label>
+                            <label class="form-label small fw-semibold text-muted mb-1">Promo Code / Coupon</label>
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-sm" placeholder="Enter coupon (e.g. STORE10)" value="STORE10">
-                                <button class="btn btn-outline-secondary btn-sm" type="button">Apply</button>
+                                <button class="btn btn-outline-secondary btn-sm fw-semibold" type="button">Apply</button>
                             </div>
                         </div>
 
                         <hr class="my-3">
 
-                        <div class="d-flex justify-content-between mb-4">
+                        <div class="d-flex justify-content-between align-items-baseline mb-4">
                             <span class="fs-5 fw-bold text-dark">Total Amount</span>
                             <span class="fs-4 fw-bold text-primary">₹{{ number_format($cartData['total'], 2) }}</span>
                         </div>
 
-                        <a href="{{ route('checkout.shipping') }}" class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-sm">
-                            Proceed to Checkout <i class="fa-solid fa-arrow-right ms-2"></i>
+                        <a href="{{ route('checkout.shipping') }}" class="btn btn-primary btn-md btn-md-lg w-100 py-2.5 py-sm-3 fw-bold shadow-sm text-nowrap d-flex align-items-center justify-content-center">
+                            <span>Proceed to Checkout</span> <i class="fa-solid fa-arrow-right ms-2"></i>
                         </a>
 
-                        <div class="mt-4 pt-3 border-top text-center text-muted small">
+                        <div class="mt-3 pt-3 border-top text-center text-muted small" style="font-size: 0.78rem;">
                             <i class="fa-solid fa-lock text-success me-1"></i> Guaranteed 256-bit Encrypted Checkout
                         </div>
                     </div>
@@ -194,15 +267,15 @@
     @else
         <!-- Empty Cart -->
         <div class="card border-0 shadow-sm rounded-4 text-center py-5 my-4 bg-white">
-            <div class="card-body">
+            <div class="card-body px-3">
                 <div class="mb-3 text-muted">
                     <i class="fa-solid fa-cart-arrow-down fs-1 text-primary opacity-50"></i>
                 </div>
-                <h4 class="fw-bold text-dark mb-2">Your Shopping Cart is Empty</h4>
-                <p class="text-muted small mb-4" style="max-width: 400px; margin: 0 auto;">
+                <h4 class="fw-bold text-dark mb-2 fs-5 fs-md-4">Your Shopping Cart is Empty</h4>
+                <p class="text-muted small mb-4 mx-auto" style="max-width: 400px;">
                     You don't have any products in your cart yet. Explore our latest arrivals and discover great deals today!
                 </p>
-                <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg px-4 py-3 fw-bold shadow-sm">
+                <a href="{{ route('products.index') }}" class="btn btn-primary px-4 py-2.5 fw-bold shadow-sm">
                     <i class="fa-solid fa-store me-2"></i> Browse Products Now
                 </a>
             </div>
@@ -211,3 +284,4 @@
 
 </div>
 @endsection
+

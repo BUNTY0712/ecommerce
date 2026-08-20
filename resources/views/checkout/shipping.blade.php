@@ -3,40 +3,40 @@
 @section('title', 'Shipping Details - Checkout - StoreCraft')
 
 @section('content')
-<div class="container">
+<div class="container px-3 px-sm-4">
     
     <!-- Checkout Steps -->
-    <div class="checkout-steps">
+    <div class="checkout-steps mb-4 flex-wrap gap-2 gap-sm-4 justify-content-center">
         <div class="step-item active">
             <div class="step-number"><i class="fa-solid fa-truck-fast fs-7"></i></div>
-            <span>Shipping</span>
+            <span class="text-nowrap">Shipping</span>
         </div>
-        <div class="step-divider"></div>
+        <div class="step-divider d-none d-sm-block"></div>
         <div class="step-item">
             <div class="step-number">2</div>
-            <span>Payment</span>
+            <span class="text-nowrap">Payment</span>
         </div>
-        <div class="step-divider"></div>
+        <div class="step-divider d-none d-sm-block"></div>
         <div class="step-item">
             <div class="step-number">3</div>
-            <span>Success</span>
+            <span class="text-nowrap">Success</span>
         </div>
     </div>
 
-    <div class="row g-4 justify-content-center mb-5">
+    <div class="row g-3 g-md-4 justify-content-center mb-4 mb-md-5">
         <!-- Shipping Form Card -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-white py-3 border-0">
-                    <h5 class="fw-bold mb-0 text-dark">
+                    <h5 class="fw-bold mb-0 text-dark fs-5">
                         <i class="fa-solid fa-address-card me-2 text-primary"></i> Customer & Shipping Information
                     </h5>
                     <p class="text-muted small mb-0 mt-1">Please enter the delivery address for your order.</p>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-3 p-sm-4">
                     @if(isset($deliveryMode) && $deliveryMode === 'restricted')
                         <div class="alert alert-warning border-0 rounded-3 mb-4 d-flex align-items-center gap-2 py-2 px-3 small" style="background-color: #fffbeb; color: #92400e;">
-                            <i class="fa-solid fa-truck-clock fs-4 text-warning"></i>
+                            <i class="fa-solid fa-truck-clock fs-4 text-warning flex-shrink-0"></i>
                             <div>
                                 <strong>Limited Area Delivery Active:</strong> Our store currently delivers to select local pincodes only. Enter your pincode to verify delivery availability.
                             </div>
@@ -46,10 +46,10 @@
                     <form action="{{ route('checkout.storeShipping') }}" method="POST">
                         @csrf
 
-                        <div class="row g-3">
+                        <div class="row g-2.5 g-sm-3">
                             <!-- First Name -->
                             <div class="col-md-6">
-                                <label for="first_name" class="form-label fw-semibold text-dark">First Name <span class="text-danger">*</span></label>
+                                <label for="first_name" class="form-label fw-semibold text-dark small mb-1">First Name <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        name="first_name" 
                                        id="first_name" 
@@ -64,7 +64,7 @@
 
                             <!-- Last Name -->
                             <div class="col-md-6">
-                                <label for="last_name" class="form-label fw-semibold text-dark">Last Name <span class="text-danger">*</span></label>
+                                <label for="last_name" class="form-label fw-semibold text-dark small mb-1">Last Name <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        name="last_name" 
                                        id="last_name" 
@@ -79,7 +79,7 @@
 
                             <!-- Email -->
                             <div class="col-md-6">
-                                <label for="email" class="form-label fw-semibold text-dark">Email Address <span class="text-danger">*</span></label>
+                                <label for="email" class="form-label fw-semibold text-dark small mb-1">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" 
                                        name="email" 
                                        id="email" 
@@ -94,7 +94,7 @@
 
                             <!-- Phone -->
                             <div class="col-md-6">
-                                <label for="phone" class="form-label fw-semibold text-dark">Phone Number <span class="text-danger">*</span></label>
+                                <label for="phone" class="form-label fw-semibold text-dark small mb-1">Phone Number <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        name="phone" 
                                        id="phone" 
@@ -109,7 +109,7 @@
 
                             <!-- Address Line 1 -->
                             <div class="col-12">
-                                <label for="address" class="form-label fw-semibold text-dark">Street Address <span class="text-danger">*</span></label>
+                                <label for="address" class="form-label fw-semibold text-dark small mb-1">Street Address <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        name="address" 
                                        id="address" 
@@ -124,7 +124,7 @@
 
                             <!-- Address Line 2 -->
                             <div class="col-12">
-                                <label for="address_line_2" class="form-label fw-semibold text-dark">Address Line 2 <span class="text-muted">(Optional)</span></label>
+                                <label for="address_line_2" class="form-label fw-semibold text-dark small mb-1">Address Line 2 <span class="text-muted">(Optional)</span></label>
                                 <input type="text" 
                                        name="address_line_2" 
                                        id="address_line_2" 
@@ -138,7 +138,7 @@
 
                             <!-- City -->
                             <div class="col-md-4">
-                                <label for="city" class="form-label fw-semibold text-dark">City <span class="text-danger">*</span></label>
+                                <label for="city" class="form-label fw-semibold text-dark small mb-1">City <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        name="city" 
                                        id="city" 
@@ -153,7 +153,7 @@
 
                             <!-- State -->
                             <div class="col-md-4">
-                                <label for="state" class="form-label fw-semibold text-dark">State <span class="text-danger">*</span></label>
+                                <label for="state" class="form-label fw-semibold text-dark small mb-1">State <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        name="state" 
                                        id="state" 
@@ -168,7 +168,7 @@
 
                             <!-- Pincode -->
                             <div class="col-md-4">
-                                <label for="pincode" class="form-label fw-semibold text-dark">Pincode / Zip <span class="text-danger">*</span></label>
+                                <label for="pincode" class="form-label fw-semibold text-dark small mb-1">Pincode / Zip <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <input type="text" 
                                            name="pincode" 
@@ -179,8 +179,8 @@
                                            maxlength="10"
                                            required
                                            oninput="checkPincodeRealtime(this.value)">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="checkPincodeRealtime(document.getElementById('pincode').value)">
-                                        <i class="fa-solid fa-location-crosshairs"></i> Check
+                                    <button type="button" class="btn btn-outline-secondary px-2.5" onclick="checkPincodeRealtime(document.getElementById('pincode').value)">
+                                        <i class="fa-solid fa-location-crosshairs me-1"></i> Check
                                     </button>
                                 </div>
                                 <div id="pincodeStatus" class="mt-1"></div>
@@ -191,7 +191,7 @@
 
                             <!-- Country -->
                             <div class="col-12">
-                                <label for="country" class="form-label fw-semibold text-dark">Country <span class="text-danger">*</span></label>
+                                <label for="country" class="form-label fw-semibold text-dark small mb-1">Country <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        name="country" 
                                        id="country" 
@@ -205,14 +205,15 @@
                             </div>
                         </div>
 
-                        <hr class="my-4">
+                        <hr class="my-3 my-sm-4">
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="{{ route('cart.index') }}" class="btn btn-outline-secondary px-4 fw-semibold">
+                        <!-- Action Buttons: Stacked on Mobile, Side-by-Side on Desktop -->
+                        <div class="d-flex flex-column-reverse flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-2 gap-sm-3">
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-secondary px-3 px-sm-4 py-2.5 fw-semibold text-nowrap text-center">
                                 <i class="fa-solid fa-arrow-left me-1"></i> Back to Cart
                             </a>
-                            <button type="submit" class="btn btn-primary px-4 py-2 fw-bold shadow-sm">
-                                Continue to Payment <i class="fa-solid fa-arrow-right ms-1"></i>
+                            <button type="submit" class="btn btn-primary px-3 px-sm-4 py-2.5 fw-bold shadow-sm text-nowrap d-flex align-items-center justify-content-center">
+                                <span>Continue to Payment</span> <i class="fa-solid fa-arrow-right ms-2"></i>
                             </button>
                         </div>
                     </form>
@@ -222,7 +223,7 @@
 
         <!-- Sidebar Summary -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4">
+            <div class="card border-0 shadow-sm rounded-4 sticky-lg-top" style="top: 100px;">
                 <div class="card-header bg-white py-3 border-0">
                     <h6 class="fw-bold mb-0 text-dark">Itemized Order Summary</h6>
                 </div>
@@ -235,36 +236,36 @@
                                     : asset('storage/products/placeholder.svg');
                             @endphp
                             <li class="list-group-item px-0 d-flex align-items-center justify-content-between border-0 py-2">
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-2 overflow-hidden">
                                     <img src="{{ $imagePath }}" 
                                          alt="{{ $item['name'] }}" 
-                                         class="rounded border bg-light" 
+                                         class="rounded border bg-light flex-shrink-0" 
                                          style="width: 42px; height: 42px; object-fit: contain;">
-                                    <div>
+                                    <div class="overflow-hidden">
                                         <span class="small fw-semibold text-dark d-block text-truncate" style="max-width: 140px;">{{ $item['name'] }}</span>
                                         <span class="small text-muted">Qty: {{ $item['quantity'] }}</span>
                                     </div>
                                 </div>
-                                <span class="small text-dark fw-bold">₹{{ number_format($item['total'], 2) }}</span>
+                                <span class="small text-dark fw-bold text-nowrap ms-2">₹{{ number_format($item['total'], 2) }}</span>
                             </li>
                         @endforeach
                     </ul>
                     <hr class="my-2">
                     <div class="d-flex justify-content-between small text-secondary mb-1">
                         <span>Subtotal</span>
-                        <span>₹{{ number_format($cartData['subtotal'], 2) }}</span>
+                        <span class="fw-semibold text-dark">₹{{ number_format($cartData['subtotal'], 2) }}</span>
                     </div>
                     <div class="d-flex justify-content-between small text-secondary mb-2">
                         <span>Shipping</span>
                         @if($cartData['shipping'] == 0)
                             <span class="text-success fw-bold">FREE</span>
                         @else
-                            <span>₹{{ number_format($cartData['shipping'], 2) }}</span>
+                            <span class="fw-semibold text-dark">₹{{ number_format($cartData['shipping'], 2) }}</span>
                         @endif
                     </div>
-                    <div class="d-flex justify-content-between fw-bold text-dark fs-6 pt-2 border-top">
+                    <div class="d-flex justify-content-between align-items-baseline fw-bold text-dark fs-6 pt-2 border-top">
                         <span>Total Payable</span>
-                        <span class="text-primary">₹{{ number_format($cartData['total'], 2) }}</span>
+                        <span class="text-primary fs-5">₹{{ number_format($cartData['total'], 2) }}</span>
                     </div>
                 </div>
             </div>
