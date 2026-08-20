@@ -1,9 +1,15 @@
+@php
+    $siteName = \App\Models\Setting::get('site_name', 'StoreCraft');
+    $siteLogo = \App\Models\Setting::get('site_logo');
+    $primaryColor = \App\Models\Setting::get('theme_primary_color', '#4f46e5');
+    $secondaryColor = \App\Models\Setting::get('theme_secondary_color', '#7c3aed');
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - StoreCraft Control Panel</title>
+    <title>Admin Login - {{ $siteName }} Control Panel</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,10 +42,25 @@
         }
 
         .admin-login-header {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $secondaryColor }} 100%);
             color: #ffffff;
             padding: 2.5rem 2rem 2rem;
-            text-center;
+            text-align: center;
+        }
+
+        .text-primary {
+            color: {{ $primaryColor }} !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $secondaryColor }} 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 14px {{ $primaryColor }}40 !important;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.94;
+            transform: translateY(-1px);
         }
     </style>
 </head>
@@ -63,10 +84,14 @@
             <!-- Login Card -->
             <div class="admin-login-card">
                 <div class="admin-login-header text-center">
-                    <div class="bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 64px; height: 64px;">
-                        <i class="fa-solid fa-shield-halved fs-2"></i>
+                    <div class="bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm p-2" style="width: 68px; height: 68px;">
+                        @if($siteLogo && \Illuminate\Support\Facades\Storage::disk('public')->exists($siteLogo))
+                            <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ $siteName }}" style="max-height: 44px; max-width: 44px; object-fit: contain;">
+                        @else
+                            <i class="fa-solid fa-shield-halved fs-2" style="color: {{ $primaryColor }};"></i>
+                        @endif
                     </div>
-                    <h3 class="fw-extrabold mb-1">StoreCraft Admin</h3>
+                    <h3 class="fw-bold mb-1">{{ $siteName }} Admin</h3>
                     <p class="mb-0 text-white-50 small">Control Panel Authentication</p>
                 </div>
 
@@ -124,7 +149,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-sm" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border: none;">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-sm">
                             <i class="fa-solid fa-lock-open me-2"></i> Access Admin Panel
                         </button>
                     </form>

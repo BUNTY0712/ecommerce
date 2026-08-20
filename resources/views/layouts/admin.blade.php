@@ -1,10 +1,15 @@
+@php
+    $adminThemePrimary = \App\Models\Setting::get('theme_primary_color', '#4f46e5');
+    $adminThemeSecondary = \App\Models\Setting::get('theme_secondary_color', '#7c3aed');
+    $siteName = \App\Models\Setting::get('site_name', 'StoreCraft');
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin Dashboard - StoreCraft Control Panel')</title>
+    <title>@yield('title', 'Admin Dashboard - ' . $siteName . ' Control Panel')</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,9 +27,17 @@
             --admin-sidebar-width: 260px;
             --admin-bg: #f1f5f9;
             --admin-dark: #0f172a;
-            --admin-primary: #4f46e5;
-            --admin-primary-hover: #4338ca;
+            --admin-primary: {{ $adminThemePrimary }};
+            --admin-primary-hover: {{ $adminThemeSecondary }};
             --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+
+        .text-primary { color: {{ $adminThemePrimary }} !important; }
+        .bg-primary { background-color: {{ $adminThemePrimary }} !important; }
+        .bg-primary-subtle { background-color: {{ $adminThemePrimary }}18 !important; }
+        .btn-primary { 
+            background: linear-gradient(135deg, {{ $adminThemePrimary }} 0%, {{ $adminThemeSecondary }} 100%) !important; 
+            border: none !important; 
         }
 
         body {
@@ -152,6 +165,10 @@
 
             <a href="{{ route('admin.categories.index') }}" class="admin-nav-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-layer-group"></i> Categories
+            </a>
+
+            <a href="{{ route('admin.settings.index') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-palette"></i> Theme & Logo Settings
             </a>
 
             <div class="px-3 pt-4 pb-2 text-uppercase fs-8 fw-bold text-muted tracking-wider" style="letter-spacing: 0.08em; font-size: 0.7rem;">Quick Links</div>

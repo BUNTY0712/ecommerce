@@ -1,10 +1,15 @@
+@php
+    $themePrimary = \App\Models\Setting::get('theme_primary_color', '#4f46e5');
+    $themeSecondary = \App\Models\Setting::get('theme_secondary_color', '#7c3aed');
+    $siteName = \App\Models\Setting::get('site_name', 'StoreCraft');
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'StoreCraft - Premium E-Commerce Destination')</title>
+    <title>@yield('title', $siteName . ' - Premium E-Commerce Destination')</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,9 +25,9 @@
     <!-- Custom Professional Styling -->
     <style>
         :root {
-            --brand-primary: #4f46e5;
-            --brand-primary-hover: #4338ca;
-            --brand-secondary: #06b6d4;
+            --brand-primary: {{ $themePrimary }};
+            --brand-primary-hover: {{ $themePrimary }};
+            --brand-secondary: {{ $themeSecondary }};
             --brand-dark: #0f172a;
             --brand-accent: #f59e0b;
             --bg-canvas: #f8fafc;
@@ -36,8 +41,35 @@
             --radius-lg: 1.25rem;
             --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
             --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
-            --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --gradient-primary: linear-gradient(135deg, {{ $themePrimary }} 0%, {{ $themeSecondary }} 100%);
             --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        /* Dynamic Theme Custom Color Overrides */
+        .text-primary { color: {{ $themePrimary }} !important; }
+        .bg-primary { background-color: {{ $themePrimary }} !important; }
+        .bg-primary-subtle { background-color: {{ $themePrimary }}18 !important; }
+        .border-primary { border-color: {{ $themePrimary }} !important; }
+        .btn-primary { 
+            background: linear-gradient(135deg, {{ $themePrimary }} 0%, {{ $themeSecondary }} 100%) !important; 
+            border: none !important; 
+            box-shadow: 0 4px 12px {{ $themePrimary }}40 !important;
+        }
+        .btn-primary:hover, .btn-primary:focus { 
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+        .btn-outline-primary { 
+            color: {{ $themePrimary }} !important; 
+            border-color: {{ $themePrimary }} !important; 
+        }
+        .btn-outline-primary:hover { 
+            background-color: {{ $themePrimary }} !important; 
+            color: #ffffff !important; 
+        }
+        .badge-category {
+            background-color: {{ $themePrimary }}15 !important;
+            color: {{ $themePrimary }} !important;
         }
 
         body {

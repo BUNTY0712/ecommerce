@@ -2,6 +2,9 @@
     $cartData = \App\Services\CartService::getValidatedCart();
     $cartCount = $cartData['item_count'];
     $cartTotal = $cartData['subtotal'];
+    $siteName = \App\Models\Setting::get('site_name', 'StoreCraft');
+    $siteLogo = \App\Models\Setting::get('site_logo');
+    $announcementText = \App\Models\Setting::get('announcement_text', '🎉 Exclusive Sale: Get 10% OFF with code STORE10');
 @endphp
 
 <!-- Top Announcement Bar -->
@@ -13,7 +16,7 @@
             <span><i class="fa-solid fa-shield-check text-success me-1"></i> 100% Genuine Products</span>
         </div>
         <div class="mx-auto mx-md-0 fw-semibold">
-            🎉 Exclusive Sale: Get 10% OFF with code <code>STORE10</code>
+            {!! $announcementText !!}
         </div>
         <div class="d-none d-lg-flex align-items-center gap-3">
             <a href="{{ route('admin.dashboard') }}" class="text-warning text-decoration-none fw-bold"><i class="fa-solid fa-gauge-high me-1"></i> Admin Panel</a>
@@ -28,9 +31,13 @@
     <nav class="navbar navbar-expand-lg py-3">
         <div class="container">
             <!-- Brand Logo -->
-            <a class="brand-logo d-flex align-items-center gap-2 me-lg-4" href="{{ route('home') }}">
-                <i class="fa-solid fa-bag-shopping fs-3"></i>
-                <span>Store<span class="text-primary">Craft</span></span>
+            <a class="brand-logo d-flex align-items-center gap-2 me-lg-4 text-decoration-none" href="{{ route('home') }}">
+                @if($siteLogo && \Illuminate\Support\Facades\Storage::disk('public')->exists($siteLogo))
+                    <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ $siteName }}" style="max-height: 42px; object-fit: contain;">
+                @else
+                    <i class="fa-solid fa-bag-shopping fs-3 text-primary"></i>
+                    <span class="fs-4 fw-bold text-dark">{{ $siteName }}</span>
+                @endif
             </a>
 
             <!-- Header Quick Search Bar (Desktop) -->

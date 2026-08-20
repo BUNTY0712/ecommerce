@@ -1,6 +1,10 @@
+@php
+    $siteName = \App\Models\Setting::get('site_name', 'StoreCraft');
+    $siteLogo = \App\Models\Setting::get('site_logo');
+@endphp
 @extends('layouts.app')
 
-@section('title', 'Customer Login - StoreCraft')
+@section('title', 'Customer Login - ' . $siteName)
 
 @section('content')
 <div class="container">
@@ -9,8 +13,12 @@
             <!-- Store Brand Header -->
             <div class="text-center mb-4">
                 <a class="brand-logo d-inline-flex align-items-center gap-2 text-decoration-none" href="{{ route('home') }}">
-                    <i class="fa-solid fa-bag-shopping fs-2"></i>
-                    <span class="fs-3 fw-bold text-dark">Store<span class="text-primary">Craft</span></span>
+                    @if($siteLogo && \Illuminate\Support\Facades\Storage::disk('public')->exists($siteLogo))
+                        <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ $siteName }}" style="max-height: 50px; object-fit: contain;">
+                    @else
+                        <i class="fa-solid fa-bag-shopping fs-2 text-primary"></i>
+                        <span class="fs-3 fw-bold text-dark">{{ $siteName }}</span>
+                    @endif
                 </a>
             </div>
 

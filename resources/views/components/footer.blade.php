@@ -1,10 +1,18 @@
+@php
+    $siteName = \App\Models\Setting::get('site_name', 'StoreCraft');
+    $siteLogo = \App\Models\Setting::get('site_logo');
+@endphp
 <footer class="bg-dark text-white pt-5 pb-4 mt-auto">
     <div class="container">
         <div class="row g-4">
             <!-- Col 1: Brand Info -->
             <div class="col-lg-4 col-md-6">
                 <h5 class="fw-bold text-white mb-3 d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-bag-shopping text-primary"></i> StoreCraft
+                    @if($siteLogo && \Illuminate\Support\Facades\Storage::disk('public')->exists($siteLogo))
+                        <img src="{{ asset('storage/' . $siteLogo) }}" alt="{{ $siteName }}" style="max-height: 38px; object-fit: contain;">
+                    @else
+                        <i class="fa-solid fa-bag-shopping text-primary"></i> {{ $siteName }}
+                    @endif
                 </h5>
                 <p class="text-secondary small mb-3">
                     Your one-stop modern destination for premium electronics, fashion, home essentials, and lifestyle products.
