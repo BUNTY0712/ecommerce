@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pincode;
+use App\Models\Setting;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -20,8 +22,9 @@ class CheckoutController extends Controller
         }
 
         $shippingData = Session::get('checkout_shipping', []);
+        $deliveryMode = Setting::get('delivery_mode', 'all');
 
-        return view('checkout.shipping', compact('cartData', 'shippingData'));
+        return view('checkout.shipping', compact('cartData', 'shippingData', 'deliveryMode'));
     }
 
     /**
@@ -41,6 +44,14 @@ class CheckoutController extends Controller
             'pincode' => 'required|string|max:20',
             'country' => 'required|string|max:100',
         ]);
+
+        // Check delivery pincode restriction
+        if (!Pincode::isServiceable($request->input('pincode'))) {
+            $msg = Setting::get('delivery_restricted_message', 'Sorry, delivery is not available for this pincode.');
+            return back()->withInput()->withErrors([
+                'pincode' => $msg . " (Pincode: {$request->input('pincode')})",
+            ]);
+        }
 
         Session::put('checkout_shipping', $validated);
 

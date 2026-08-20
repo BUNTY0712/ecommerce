@@ -75,4 +75,27 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     // Admin Site Settings (Theme Color & Logo)
     Route::get('/settings', [\App\Http\Controllers\Admin\AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\Admin\AdminSettingController::class, 'update'])->name('settings.update');
+
+    // Admin Pincodes Management (Delivery Restrictions)
+    Route::get('/pincodes', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'index'])->name('pincodes.index');
+    Route::post('/pincodes/mode', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'updateMode'])->name('pincodes.updateMode');
+    Route::post('/pincodes', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'store'])->name('pincodes.store');
+    Route::post('/pincodes/bulk', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'storeBulk'])->name('pincodes.storeBulk');
+    Route::post('/pincodes/{pincode}/toggle', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'toggle'])->name('pincodes.toggle');
+    Route::delete('/pincodes/{pincode}', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'destroy'])->name('pincodes.destroy');
+    Route::delete('/pincodes-all', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'destroyAll'])->name('pincodes.destroyAll');
 });
+
+// Real-time Pincode Availability Check API
+Route::get('/pincode/check/{pincode}', function ($pincode) {
+    $serviceable = \App\Models\Pincode::isServiceable($pincode);
+    $mode = \App\Models\Setting::get('delivery_mode', 'all');
+    $message = \App\Models\Setting::get('delivery_restricted_message', 'Delivery is not available at this pincode.');
+
+    return response()->json([
+        'serviceable' => $serviceable,
+        'mode' => $mode,
+        'pincode' => $pincode,
+        'message' => $serviceable ? 'Delivery available to this pincode!' : $message,
+    ]);
+})->name('pincode.check');

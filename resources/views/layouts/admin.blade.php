@@ -171,6 +171,10 @@
                 <i class="fa-solid fa-palette"></i> Theme & Logo Settings
             </a>
 
+            <a href="{{ route('admin.pincodes.index') }}" class="admin-nav-item {{ request()->routeIs('admin.pincodes.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-truck-ramp-box"></i> Delivery Pincodes
+            </a>
+
             <div class="px-3 pt-4 pb-2 text-uppercase fs-8 fw-bold text-muted tracking-wider" style="letter-spacing: 0.08em; font-size: 0.7rem;">Quick Links</div>
 
             <a href="{{ route('home') }}" target="_blank" class="admin-nav-item">

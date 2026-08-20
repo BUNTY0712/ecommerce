@@ -34,6 +34,15 @@
                     <p class="text-muted small mb-0 mt-1">Please enter the delivery address for your order.</p>
                 </div>
                 <div class="card-body p-4">
+                    @if(isset($deliveryMode) && $deliveryMode === 'restricted')
+                        <div class="alert alert-warning border-0 rounded-3 mb-4 d-flex align-items-center gap-2 py-2 px-3 small" style="background-color: #fffbeb; color: #92400e;">
+                            <i class="fa-solid fa-truck-clock fs-4 text-warning"></i>
+                            <div>
+                                <strong>Limited Area Delivery Active:</strong> Our store currently delivers to select local pincodes only. Enter your pincode to verify delivery availability.
+                            </div>
+                        </div>
+                    @endif
+
                     <form action="{{ route('checkout.storeShipping') }}" method="POST">
                         @csrf
 
@@ -159,16 +168,24 @@
 
                             <!-- Pincode -->
                             <div class="col-md-4">
-                                <label for="pincode" class="form-label fw-semibold text-dark">Pincode <span class="text-danger">*</span></label>
-                                <input type="text" 
-                                       name="pincode" 
-                                       id="pincode" 
-                                       class="form-control py-2 @error('pincode') is-invalid @enderror" 
-                                       value="{{ old('pincode', $shippingData['pincode'] ?? '') }}" 
-                                       placeholder="Pincode / Zip" 
-                                       required>
+                                <label for="pincode" class="form-label fw-semibold text-dark">Pincode / Zip <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" 
+                                           name="pincode" 
+                                           id="pincode" 
+                                           class="form-control py-2 @error('pincode') is-invalid @enderror" 
+                                           value="{{ old('pincode', $shippingData['pincode'] ?? '') }}" 
+                                           placeholder="e.g. 110001" 
+                                           maxlength="10"
+                                           required
+                                           oninput="checkPincodeRealtime(this.value)">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="checkPincodeRealtime(document.getElementById('pincode').value)">
+                                        <i class="fa-solid fa-location-crosshairs"></i> Check
+                                    </button>
+                                </div>
+                                <div id="pincodeStatus" class="mt-1"></div>
                                 @error('pincode')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -255,3 +272,44 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+let checkTimeout = null;
+function checkPincodeRealtime(code) {
+    const statusDiv = document.getElementById('pincodeStatus');
+    if (!statusDiv) return;
+
+    const trimmed = code.trim();
+    if (trimmed.length < 3) {
+        statusDiv.innerHTML = '';
+        return;
+    }
+
+    clearTimeout(checkTimeout);
+    checkTimeout = setTimeout(() => {
+        statusDiv.innerHTML = '<span class="spinner-border spinner-border-sm text-primary me-1"></span><span class="text-muted small">Checking delivery...</span>';
+
+        fetch(`/pincode/check/${encodeURIComponent(trimmed)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.serviceable) {
+                    statusDiv.innerHTML = '<div class="alert alert-success py-1 px-2 rounded small mb-0 mt-1 d-inline-flex align-items-center gap-1"><i class="fa-solid fa-circle-check text-success"></i> <span class="fw-semibold">Delivery Available</span></div>';
+                } else {
+                    statusDiv.innerHTML = '<div class="alert alert-danger py-1 px-2 rounded small mb-0 mt-1 d-inline-flex align-items-center gap-1"><i class="fa-solid fa-circle-xmark text-danger"></i> <span class="fw-semibold">' + data.message + '</span></div>';
+                }
+            })
+            .catch(() => {
+                statusDiv.innerHTML = '';
+            });
+    }, 350);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const pincodeInput = document.getElementById('pincode');
+    if (pincodeInput && pincodeInput.value) {
+        checkPincodeRealtime(pincodeInput.value);
+    }
+});
+</script>
+@endpush
