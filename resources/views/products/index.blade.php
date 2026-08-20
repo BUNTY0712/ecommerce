@@ -6,7 +6,7 @@
 <div class="container">
 
     <!-- Hero Showcase Banner -->
-    <div class="rounded-4 p-4 p-md-5 mb-5 text-white position-relative overflow-hidden shadow-sm" 
+    <div id="hero-banner" class="hero-banner rounded-4 p-4 p-md-5 mb-5 text-white position-relative overflow-hidden shadow-sm" 
          style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);">
         
         <!-- Background Overlay Shapes -->
@@ -184,4 +184,45 @@
     @endif
 
 </div>
+
+@push('styles')
+<style>
+    .hero-banner {
+        transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin 0.4s ease, padding 0.4s ease, transform 0.4s ease;
+        max-height: 800px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .hero-banner.hero-hidden {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        transform: translateY(-15px);
+        pointer-events: none;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const heroBanner = document.getElementById('hero-banner');
+        if (!heroBanner) return;
+
+        function handleScroll() {
+            if (window.scrollY > 40) {
+                heroBanner.classList.add('hero-hidden');
+            } else {
+                heroBanner.classList.remove('hero-hidden');
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+    });
+</script>
+@endpush
 @endsection
