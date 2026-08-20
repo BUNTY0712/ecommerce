@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CartService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -138,6 +139,7 @@ class PaymentController extends Controller
 
                 // Insert into orders table using DB::table
                 $newOrderId = DB::table('orders')->insertGetId([
+                    'user_id' => Auth::check() ? Auth::id() : null,
                     'order_number' => $orderNumber,
                     'customer_name' => $customerName,
                     'email' => $shippingData['email'],

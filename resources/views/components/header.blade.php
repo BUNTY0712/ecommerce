@@ -135,6 +135,11 @@
                                     <span class="d-block fw-bold text-dark small">{{ Auth::user()->name }}</span>
                                     <span class="d-block text-muted small">{{ Auth::user()->email }}</span>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item fw-semibold py-2" href="{{ route('orders.myOrders') }}">
+                                        <i class="fa-solid fa-box-open me-2 text-primary"></i> My Orders
+                                    </a>
+                                </li>
                                 @if(Auth::user()->role === 'admin')
                                     <li>
                                         <a class="dropdown-menu-item dropdown-item text-warning fw-semibold py-2" href="{{ route('admin.dashboard') }}">

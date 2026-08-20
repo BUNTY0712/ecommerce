@@ -45,6 +45,12 @@ Route::post('/checkout/payment', [PaymentController::class, 'process'])->name('c
 // Order Success Receipt
 Route::get('/order/success/{order}', [OrderController::class, 'success'])->name('order.success');
 
+// Customer Account & Order History (Protected by auth)
+Route::middleware('auth')->group(function () {
+    Route::get('/my-orders', [OrderController::class, 'userOrders'])->name('orders.myOrders');
+    Route::get('/my-orders/{order}', [OrderController::class, 'userOrderDetails'])->name('orders.showUser');
+});
+
 // Admin Authentication (Public)
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
