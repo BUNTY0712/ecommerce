@@ -167,6 +167,10 @@
                 <i class="fa-solid fa-layer-group"></i> Categories
             </a>
 
+            <a href="{{ route('admin.banners.index') }}" class="admin-nav-item {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-images"></i> Home Banners
+            </a>
+
             <a href="{{ route('admin.settings.index') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-palette"></i> Theme & Logo Settings
             </a>

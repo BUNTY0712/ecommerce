@@ -91,6 +91,13 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::post('/pincodes/{pincode}/toggle', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'toggle'])->name('pincodes.toggle');
     Route::delete('/pincodes/{pincode}', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'destroy'])->name('pincodes.destroy');
     Route::delete('/pincodes-all', [\App\Http\Controllers\Admin\AdminPincodeController::class, 'destroyAll'])->name('pincodes.destroyAll');
+
+    // Admin Homepage Banners Management
+    Route::get('/banners', [\App\Http\Controllers\Admin\AdminBannerController::class, 'index'])->name('banners.index');
+    Route::post('/banners', [\App\Http\Controllers\Admin\AdminBannerController::class, 'store'])->name('banners.store');
+    Route::put('/banners/{banner}', [\App\Http\Controllers\Admin\AdminBannerController::class, 'update'])->name('banners.update');
+    Route::post('/banners/{banner}/toggle', [\App\Http\Controllers\Admin\AdminBannerController::class, 'toggleStatus'])->name('banners.toggle');
+    Route::delete('/banners/{banner}', [\App\Http\Controllers\Admin\AdminBannerController::class, 'destroy'])->name('banners.destroy');
 });
 
 // Real-time Pincode Availability Check API

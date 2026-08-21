@@ -5,37 +5,135 @@
 @section('content')
 <div class="container px-3 px-sm-4">
 
-    <!-- Hero Showcase Banner -->
-    <div id="hero-banner" class="hero-banner rounded-4 p-4 p-sm-5 mb-4 mb-md-5 text-white position-relative overflow-hidden shadow-sm" 
-         style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);">
-        
-        <!-- Background Overlay Shapes -->
-        <div class="position-absolute top-0 end-0 p-5 opacity-10 pointer-events-none d-none d-md-block">
-            <i class="fa-solid fa-bag-shopping" style="font-size: 16rem; margin-top: -30px; margin-right: -40px;"></i>
-        </div>
+@php
+    $activeBanners = \Illuminate\Support\Facades\DB::table('banners')
+        ->where('status', 1)
+        ->orderBy('sort_order', 'asc')
+        ->orderBy('id', 'desc')
+        ->get();
+@endphp
 
-        <div class="row align-items-center position-relative z-1">
-            <div class="col-lg-9 col-xl-8">
-                <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill text-uppercase mb-3 shadow-sm" style="letter-spacing: 0.05em; font-size: 0.75rem;">
-                    <i class="fa-solid fa-sparkles me-1"></i> New Season Arrivals 2026
-                </span>
-                <h1 class="fw-extrabold display-6 display-md-5 mb-3 text-white">
-                    Elevate Your Lifestyle with Premium Goods
-                </h1>
-                <p class="lead text-white-50 mb-4 fs-6 fs-md-5" style="max-width: 600px;">
-                    Explore curated collections of top-rated electronics, fashion apparel, home essentials, and lifestyle accessories at unbeatable prices.
-                </p>
-                <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 gap-sm-3">
-                    <a href="#products-grid" class="btn btn-primary btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-bold w-100 w-sm-auto text-center">
-                        <i class="fa-solid fa-grid-2 me-2"></i> Shop All Products
-                    </a>
-                    <a href="{{ route('products.index', ['category' => 1]) }}" class="btn btn-outline-light btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-semibold w-100 w-sm-auto text-center">
-                        <i class="fa-solid fa-bolt me-2"></i> Electronics Sale
-                    </a>
+    <!-- Hero Showcase Carousel Slider -->
+    @if(isset($activeBanners) && $activeBanners->count() > 0)
+        <div id="heroBannerCarousel" class="carousel slide carousel-fade mb-4 mb-md-5 rounded-4 overflow-hidden shadow-md" data-bs-ride="carousel" data-bs-interval="5000">
+            <!-- Carousel Indicators -->
+            @if($activeBanners->count() > 1)
+                <div class="carousel-indicators mb-3">
+                    @foreach($activeBanners as $index => $banner)
+                        <button type="button" 
+                                data-bs-target="#heroBannerCarousel" 
+                                data-bs-slide-to="{{ $index }}" 
+                                class="{{ $loop->first ? 'active' : '' }}" 
+                                aria-current="{{ $loop->first ? 'true' : 'false' }}" 
+                                aria-label="Slide {{ $index + 1 }}"></button>
+                    @endforeach
+                </div>
+            @endif
+
+            <!-- Carousel Slides -->
+            <div class="carousel-inner">
+                @foreach($activeBanners as $index => $banner)
+                    <div class="carousel-item {{ $loop->first ? 'active' : '' }} position-relative" style="max-height: 480px; min-height: 360px; background-color: #0f172a;">
+                        @if(!empty($banner->image) && \Illuminate\Support\Facades\Storage::disk('public')->exists($banner->image))
+                            <img src="{{ asset('storage/' . $banner->image) }}" 
+                                 class="d-block w-100 object-fit-cover position-absolute top-0 start-0 h-100" 
+                                 alt="{{ $banner->title ?? 'Banner Slide' }}"
+                                 style="object-position: center;">
+                        @else
+                            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1920&auto=format&fit=crop" 
+                                 class="d-block w-100 object-fit-cover position-absolute top-0 start-0 h-100" 
+                                 alt="Default Banner">
+                        @endif
+
+                        <!-- Gradient Glass Overlay for legible overlay text -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100" 
+                             style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.55) 60%, rgba(15, 23, 42, 0.25) 100%);"></div>
+
+                        <!-- Content Overlay -->
+                        <div class="container position-relative z-1 h-100 d-flex align-items-center p-4 p-sm-5 text-white" style="min-height: 360px;">
+                            <div class="row align-items-center w-100">
+                                <div class="col-lg-9 col-xl-8">
+                                    @if($banner->badge_text)
+                                        <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill text-uppercase mb-3 shadow-sm" style="letter-spacing: 0.05em; font-size: 0.75rem;">
+                                            <i class="fa-solid fa-sparkles me-1"></i> {{ $banner->badge_text }}
+                                        </span>
+                                    @endif
+
+                                    @if($banner->title)
+                                        <h1 class="fw-extrabold display-6 display-md-5 mb-3 text-white">
+                                            {{ $banner->title }}
+                                        </h1>
+                                    @endif
+
+                                    @if($banner->subtitle)
+                                        <p class="lead text-white-50 mb-4 fs-6 fs-md-5" style="max-width: 620px;">
+                                            {{ $banner->subtitle }}
+                                        </p>
+                                    @endif
+
+                                    <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 gap-sm-3">
+                                        @if($banner->button_text)
+                                            <a href="{{ $banner->button_url ?: '#products-grid' }}" class="btn btn-primary btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-bold w-100 w-sm-auto text-center">
+                                                {{ $banner->button_text }} <i class="fa-solid fa-arrow-right ms-2"></i>
+                                            </a>
+                                        @else
+                                            <a href="#products-grid" class="btn btn-primary btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-bold w-100 w-sm-auto text-center">
+                                                <i class="fa-solid fa-bag-shopping me-2"></i> Shop All Products
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Carousel Controls -->
+            @if($activeBanners->count() > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon rounded-circle bg-dark bg-opacity-50 p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon rounded-circle bg-dark bg-opacity-50 p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            @endif
+        </div>
+    @else
+        <!-- Fallback Default Hero Showcase Banner (with Unsplash background image) -->
+        <div id="hero-banner" class="hero-banner rounded-4 p-4 p-sm-5 mb-4 mb-md-5 text-white position-relative overflow-hidden shadow-sm" 
+             style="background: linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(30,27,75,0.85) 50%, rgba(49,46,129,0.8) 100%), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;">
+            
+            <!-- Background Overlay Shapes -->
+            <div class="position-absolute top-0 end-0 p-5 opacity-10 pointer-events-none d-none d-md-block">
+                <i class="fa-solid fa-bag-shopping" style="font-size: 16rem; margin-top: -30px; margin-right: -40px;"></i>
+            </div>
+
+            <div class="row align-items-center position-relative z-1">
+                <div class="col-lg-9 col-xl-8">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill text-uppercase mb-3 shadow-sm" style="letter-spacing: 0.05em; font-size: 0.75rem;">
+                        <i class="fa-solid fa-sparkles me-1"></i> New Season Arrivals 2026
+                    </span>
+                    <h1 class="fw-extrabold display-6 display-md-5 mb-3 text-white">
+                        Elevate Your Lifestyle with Premium Goods
+                    </h1>
+                    <p class="lead text-white-50 mb-4 fs-6 fs-md-5" style="max-width: 600px;">
+                        Explore curated collections of top-rated electronics, fashion apparel, home essentials, and lifestyle accessories at unbeatable prices.
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 gap-sm-3">
+                        <a href="#products-grid" class="btn btn-primary btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-bold w-100 w-sm-auto text-center">
+                            <i class="fa-solid fa-grid-2 me-2"></i> Shop All Products
+                        </a>
+                        <a href="{{ route('products.index', ['category' => 1]) }}" class="btn btn-outline-light btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-semibold w-100 w-sm-auto text-center">
+                            <i class="fa-solid fa-bolt me-2"></i> Electronics Sale
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Trust Features Bar -->
     <div class="row g-2 g-sm-3 mb-4 mb-md-5">
