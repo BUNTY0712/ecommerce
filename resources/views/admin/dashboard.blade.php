@@ -64,15 +64,15 @@
 </div>
 
 <!-- Quick Shortcuts Bar -->
-<div class="d-flex align-items-center justify-content-between mb-4 bg-white p-3 rounded-4 shadow-sm border">
+<div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mb-4 bg-white p-3 rounded-4 shadow-sm border">
     <div class="fw-bold text-dark">
         <i class="fa-solid fa-bolt me-2 text-warning"></i> Quick Actions
     </div>
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm fw-semibold">
+    <div class="d-flex flex-wrap gap-2 w-100 w-sm-auto justify-content-start justify-content-sm-end">
+        <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm fw-semibold flex-fill flex-sm-grow-0 text-nowrap">
             <i class="fa-solid fa-plus me-1"></i> Add New Product
         </a>
-        <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary btn-sm fw-semibold">
+        <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary btn-sm fw-semibold flex-fill flex-sm-grow-0 text-nowrap">
             <i class="fa-solid fa-list-check me-1"></i> Manage Orders
         </a>
     </div>
@@ -80,9 +80,9 @@
 
 <!-- Recent Orders Table -->
 <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-    <div class="card-header bg-white py-3 px-4 border-0 d-flex align-items-center justify-content-between">
+    <div class="card-header bg-white py-3 px-3 px-md-4 border-0 d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2">
         <h5 class="fw-bold mb-0 text-dark">Recent Customer Orders</h5>
-        <a href="{{ route('admin.orders.index') }}" class="btn btn-link btn-sm text-decoration-none fw-semibold">
+        <a href="{{ route('admin.orders.index') }}" class="btn btn-link btn-sm text-decoration-none fw-semibold p-0">
             View All Orders <i class="fa-solid fa-arrow-right ms-1"></i>
         </a>
     </div>

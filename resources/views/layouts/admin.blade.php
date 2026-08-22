@@ -45,6 +45,27 @@
             background-color: var(--admin-bg);
             color: #334155;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Mobile Overlay */
+        .admin-sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .admin-sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Sidebar Styling */
@@ -56,21 +77,20 @@
             top: 0;
             bottom: 0;
             left: 0;
-            z-index: 100;
+            z-index: 1050;
             overflow-y: auto;
-            transition: all 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .admin-brand {
-            padding: 1.5rem 1.25rem;
+            padding: 1.25rem 1.25rem;
             font-size: 1.35rem;
             font-weight: 800;
             color: #ffffff;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            justify-content: space-between;
         }
 
         .admin-nav-item {
@@ -98,12 +118,46 @@
             text-anchor: middle;
         }
 
+        /* Responsive Breakpoints for Sidebar & Content */
+        @media (max-width: 991.98px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+
+            .admin-sidebar.show {
+                transform: translateX(0);
+            }
+
+            .admin-wrapper {
+                margin-left: 0 !important;
+            }
+
+            .admin-topbar {
+                padding: 0.75rem 1rem !important;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .admin-sidebar {
+                transform: translateX(0) !important;
+            }
+            
+            .admin-wrapper {
+                margin-left: var(--admin-sidebar-width);
+            }
+
+            .admin-sidebar-close-btn {
+                display: none !important;
+            }
+        }
+
         /* Main Content wrapper */
         .admin-wrapper {
-            margin-left: var(--admin-sidebar-width);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
 
         /* Admin Topbar */
@@ -114,6 +168,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 90;
         }
 
         /* Stat Cards */
@@ -123,6 +180,7 @@
             background: #ffffff;
             padding: 1.5rem;
             box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.04);
+            height: 100%;
         }
 
         .stat-icon {
@@ -133,18 +191,32 @@
             align-items: center;
             justify-content: center;
             font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 575.98px) {
+            .container-fluid {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
         }
     </style>
     @stack('styles')
 </head>
 <body>
 
+    <!-- Backdrop Overlay for Mobile Sidebar -->
+    <div class="admin-sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar Navigation -->
     <aside class="admin-sidebar shadow-lg">
-        <a href="{{ route('admin.dashboard') }}" class="admin-brand">
-            <i class="fa-solid fa-gauge-high text-primary fs-3"></i>
-            <span>Admin<span class="text-primary">Panel</span></span>
-        </a>
+        <div class="admin-brand">
+            <a href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                <i class="fa-solid fa-gauge-high text-primary fs-3"></i>
+                <span>Admin<span class="text-primary">Panel</span></span>
+            </a>
+            <button type="button" class="btn-close btn-close-white d-lg-none admin-sidebar-close-btn" id="sidebarClose" aria-label="Close sidebar"></button>
+        </div>
 
         <div class="py-3">
             <div class="px-3 pb-2 text-uppercase fs-8 fw-bold text-muted tracking-wider" style="letter-spacing: 0.08em; font-size: 0.7rem;">Main Overview</div>
@@ -199,26 +271,31 @@
     <div class="admin-wrapper">
         <!-- Topbar Header -->
         <header class="admin-topbar">
-            <div class="d-flex align-items-center gap-3">
-                <h5 class="fw-bold text-dark mb-0">@yield('page_title', 'Dashboard Overview')</h5>
+            <div class="d-flex align-items-center gap-2 me-2">
+                <button type="button" class="btn btn-light btn-sm border d-lg-none shadow-sm px-2 py-1" id="sidebarToggle" aria-label="Toggle navigation">
+                    <i class="fa-solid fa-bars fs-5 text-dark"></i>
+                </button>
+                <h5 class="fw-bold text-dark mb-0 fs-6 fs-sm-5 text-truncate">@yield('page_title', 'Dashboard Overview')</h5>
             </div>
 
-            <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('home') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                    <i class="fa-solid fa-store me-1"></i> Customer Front Store
+            <div class="d-flex align-items-center gap-2 gap-sm-3">
+                <a href="{{ route('home') }}" class="btn btn-outline-primary btn-sm rounded-pill px-2 px-sm-3 d-flex align-items-center gap-1">
+                    <i class="fa-solid fa-store"></i>
+                    <span class="d-none d-sm-inline">Customer Front Store</span>
+                    <span class="d-inline d-sm-none">Store</span>
                 </a>
                 <div class="vr mx-1"></div>
                 <div class="d-flex align-items-center gap-2">
-                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 36px; height: 36px;">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-7 shadow-sm" style="width: 36px; height: 36px; min-width: 36px;">
                         {{ Auth::check() ? strtoupper(substr(Auth::user()->name, 0, 2)) : 'AD' }}
                     </div>
-                    <span class="fw-semibold text-dark small">{{ Auth::check() ? Auth::user()->name : 'Administrator' }}</span>
+                    <span class="fw-semibold text-dark small d-none d-md-inline">{{ Auth::check() ? Auth::user()->name : 'Administrator' }}</span>
                 </div>
             </div>
         </header>
 
         <!-- Flash Alerts -->
-        <div class="container-fluid px-4 mt-3">
+        <div class="container-fluid px-3 px-md-4 mt-3">
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 py-3 px-4" role="alert">
                     <i class="fa-solid fa-circle-check me-2"></i> {{ session('success') }}
@@ -235,13 +312,72 @@
         </div>
 
         <!-- Main View Area -->
-        <main class="container-fluid px-4 py-4">
+        <main class="container-fluid px-3 px-md-4 py-3 py-md-4">
             @yield('content')
         </main>
     </div>
 
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const closeBtn = document.getElementById('sidebarClose');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            function openSidebar() {
+                if (sidebar && overlay) {
+                    sidebar.classList.add('show');
+                    overlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeSidebar() {
+                if (sidebar && overlay) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (sidebar.classList.contains('show')) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
+                });
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeSidebar);
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+
+            // Close on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar && sidebar.classList.contains('show')) {
+                    closeSidebar();
+                }
+            });
+
+            // Close sidebar when window is resized to desktop width
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 992) {
+                    closeSidebar();
+                }
+            });
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
+

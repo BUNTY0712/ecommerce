@@ -245,8 +245,8 @@
             </div>
 
             <!-- Submit Button Bar -->
-            <div class="d-flex align-items-center justify-content-end gap-3 mb-5">
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-light border px-4 py-2 fw-semibold">Cancel</a>
+            <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-end gap-2 gap-sm-3 mb-5">
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-light border px-4 py-2 fw-semibold text-center">Cancel</a>
                 <button type="submit" class="btn btn-primary px-5 py-2.5 fw-bold shadow">
                     <i class="fa-solid fa-floppy-disk me-2"></i> Save Settings & Apply Theme
                 </button>

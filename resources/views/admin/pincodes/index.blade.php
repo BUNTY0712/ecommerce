@@ -144,17 +144,15 @@
 
         </div>
 
-        <!-- Section 3: Allowed Pincodes Table -->
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
-            <div class="card-header bg-white py-3 px-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 border-bottom">
+            <div class="card-header bg-white py-3 px-3 px-md-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 border-bottom">
                 <div>
                     <h5 class="fw-bold text-dark mb-0">Allowed Delivery Pincodes Catalog</h5>
                     <p class="text-muted small mb-0">Showing {{ $pincodes->total() }} total configured pincodes</p>
                 </div>
 
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto justify-content-start justify-content-md-end">
                     <!-- Search Form -->
-                    <form action="{{ route('admin.pincodes.index') }}" method="GET" class="d-flex align-items-center gap-2">
+                    <form action="{{ route('admin.pincodes.index') }}" method="GET" class="d-flex align-items-center gap-2 flex-grow-1 flex-md-grow-0">
                         <div class="input-group input-group-sm" style="max-width: 260px;">
                             <input type="text" name="search" class="form-control" placeholder="Search pincode or city..." value="{{ request('search') }}">
                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -169,7 +167,7 @@
                         <form action="{{ route('admin.pincodes.destroyAll') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete ALL pincodes?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger btn-sm fw-semibold">
+                            <button type="submit" class="btn btn-outline-danger btn-sm fw-semibold text-nowrap">
                                 <i class="fa-solid fa-trash-can me-1"></i> Clear All
                             </button>
                         </form>
