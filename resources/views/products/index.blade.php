@@ -71,13 +71,13 @@
                                         </p>
                                     @endif
 
-                                    <div class="d-flex flex-column flex-sm-row flex-wrap gap-2 gap-sm-3">
+                                    <div class="d-flex flex-wrap gap-2 gap-sm-3">
                                         @if($banner->button_text)
-                                            <a href="{{ $banner->button_url ?: '#products-grid' }}" class="btn btn-primary btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-bold w-100 w-sm-auto text-center">
+                                            <a href="{{ $banner->button_url ?: '#products-grid' }}" class="btn btn-primary px-4 py-2 fw-bold d-inline-flex align-items-center justify-content-center">
                                                 {{ $banner->button_text }} <i class="fa-solid fa-arrow-right ms-2"></i>
                                             </a>
                                         @else
-                                            <a href="#products-grid" class="btn btn-primary btn-md btn-md-lg px-4 py-2.5 py-sm-3 fw-bold w-100 w-sm-auto text-center">
+                                            <a href="#products-grid" class="btn btn-primary px-4 py-2 fw-bold d-inline-flex align-items-center justify-content-center">
                                                 <i class="fa-solid fa-bag-shopping me-2"></i> Shop All Products
                                             </a>
                                         @endif
